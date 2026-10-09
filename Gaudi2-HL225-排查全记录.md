@@ -1,0 +1,1044 @@
+# Intel Gaudi 2 (HL-225) 部署与排查全记录
+
+> 服务器:GIGABYTE MU70-SU0-NV-XX / Xeon E5-2696 v3 / Ubuntu 24.04.4
+> 加速卡:Intel Gaudi2 HL-225（96GB HBM2e，`1da3:1020`）
+> 记录时间:2026-10-09
+>
+> 本文档记录从「`lspci` 里完全看不到卡」到「精确定位到硬件级根因」的完整过程。
+
+---
+
+## 0. TL;DR — 结论先行
+
+| 层级 | 问题 | 结果 |
+|---|---|---|
+| 1. PCIe 识别 | 卡完全不被枚举，链路 `Width x0` | ✅ **已解决**（换槽位 + 48V 辅助供电） |
+| 2. 固件 | 缺 `habanalabs/gaudi2/gaudi2-boot-fit.itb` | ✅ **已解决**（装 Intel Gaudi 软件栈） |
+| 3. SerDes 校验 | `bad SerDes type 65535` 导致 init 失败 | ✅ **已绕过**（源码补丁） |
+| 4. server_type | `Device not found` | ✅ **已绕过**（源码补丁） |
+| 5. 版本匹配 | 驱动与 Python 插件版本错配 | ✅ **已解决**（统一到 1.18.0） |
+| 6. Shared Layer | `cannot initialize shared layer` | ✅ **已解决**（缺 `libhl-thunk.so`） |
+| 7. **RDMA / 互联** | `g_ibv.init() failed` / 0 个 netdev | ✅ **已解决**（补丁③ + `nic_ports_ext_mask=0`） |
+| 8. **图编译** | `synGraphCompile failed status 26` | ✅ **已解决**（环境变量未加载！） |
+
+```
+🎉 最终结果：
+  matmul 4096x4096   : OK, sum = 56490.2890625
+  relu               : OK, max = 319.8988952636719
+  fwd+bwd            : OK, loss = 28.938304901123047
+  RESULT: HPU WORKS
+```
+
+**当前状态（2026-10-09 更新）：**
+
+```
+synInitialize, status 0[synSuccess]                   ✅
+synDeviceAcquireByDeviceType, status 0[synSuccess]    ✅  ← 曾经一直失败
+hpu device name : GAUDI2                              ✅
+randn on hpu    : OK                                  ✅
+mark_step       : OK                                  ✅
+synGraphCompile : failed status 26[synFail]           ❌  ← 现在卡在这
+```
+
+**关键结论：**
+
+- 卡硬件报 `SerDes type = 0xFFFF (UNKNOWN_SERDES_TYPE)`，已用 1.18.0 / 1.24.2
+  两版驱动**双重验证**，与软件无关。
+- 但这**并不致命**：通过 3 处源码补丁 + 1 个模块参数，**互联层已被彻底打通**
+  （24 个 NIC netdev + RDMA 设备 `hbl_0` + 设备获取成功）。
+- 剩下的是**图编译器**问题（`BOX_TYPE_ID` 拓扑不匹配的嫌疑最大），
+  性质与前面的硬件/互联问题完全不同。
+
+---
+
+## 1. 环境基线
+
+| 项 | 值 |
+|---|---|
+| 主机 | GIGABYTE `MU70-SU0-NV-XX` |
+| BIOS | `R11` / `2020-08-19` |
+| CPU | Intel Xeon `E5-2696 v3` @2.30GHz（**单路**，SOCKET 1 为空） |
+| 系统 | Ubuntu 24.04.4 LTS |
+| 内核 | `6.8.0-136-generic` |
+| 内存/NUMA | 1 个 NUMA node |
+| Gaudi2 卡 | Habana Labs `HL-225`，`[1da3:1020]`（rev 01） |
+| 卡序列号 | `AOx0000000` |
+| 卡型号号 | `F08GL0AIG032A`（PCB V3A / R0F） |
+| 卡 AIP UUID | `01P0-XXXXXXXX-XX-XXXXXX-XX-XX-XX` |
+| 卡 PCI 地址 | `0000:02:00.0`（挂根端口 `00:03.0`） |
+| 卡显存 | **96GB HBM2e** |
+
+---
+
+## 2. 硬件拓扑（踩坑点）
+
+### 2.1 板载 4 块 Intel I210 网卡
+
+| PCI 地址 | MAC 尾号 | 驱动 | 主机接口名 | 用途 |
+|---|---|---|---|---|
+| `03:00.0` | `:03` | `vfio-pci` | **主机看不到** | **immortalwrt 虚拟机的 WAN 口** |
+| `04:00.0` | `:04` | igb | `enp4s0` | LAN |
+| `05:00.0` | `:05` | igb | `enp5s0` | LAN |
+| `06:00.0` | `:06` | igb | `enp6s0` | LAN |
+| — | `:07` | — | — | BMC（IPMI `192.168.5.xxx`） |
+
+> **WAN 口是被 PCI 直通给虚拟机的 `03:00.0`**，所以主机上没有 `enp3s0`。
+> 定位 WAN 口的方法：`virsh dumpxml immortalwrt | grep -A5 hostdev`
+
+### 2.2 PCIe 槽位（重要）
+
+**只有 2 个 CPU 直连根端口可用**（因为只装了 1 颗 CPU，挂 CPU2 的槽位是死的）：
+
+| 根端口 | 端口能力 | 实际链路 | 插的卡 |
+|---|---|---|---|
+| `00:01.0` | Gen3 **x8** | Gen3 **x4** | LSI SAS2308 |
+| `00:03.0` | Gen3 **x16** | Gen3 **x8** | **Gaudi2** |
+
+> ⚠️ **两个槽都跑在标称宽度的一半**（x16→x8、x8→x4），规律一致，
+> 基本可判定是主板物理走线（x16 插槽 / x8 电气），而非故障。
+
+### 2.3 供电（关键）
+
+- Gaudi2 **必须接 48V/54V 辅助供电**（不是普通 PCIe 12V 8pin）
+- 未接时现象：**卡能枚举，但 `Module status` 永远是 `Disabled`**
+- 判断方法：`hl-smi -q` 里 `Power Readings (54V PSU)` 的 `Power Max`
+  - `0 W` → 未接 / 未识别
+  - `550 W` → 正常
+
+> ⚠️ **踩坑提醒**：`Power Max: 0 W` 也可能是「模块未使能」的**结果**而非原因。
+> 必须结合 `Module status` 和实际的 `Device acquire` 结果综合判断。
+
+---
+
+## 3. 排查历程（逐层）
+
+### Layer 1 — PCIe 完全不识别
+
+**症状**
+```
+$ lspci -nn | grep -i 1da3        → 空
+$ lspci -vv -s 00:03.0 | grep LnkSta
+  LnkSta: Speed 2.5GT/s, Width x0        ← 完全没有链路
+  LaneErrStat: 0
+```
+
+**诊断过程**
+1. `PresDet-` + `LaneErrStat: 0` → 端口**根本没尝试训练** → 槽位里电气上是死的
+2. 对比已知正常的槽位（LSI 卡在 `00:01.0` 跑 Gen3 x4）证明槽位本身良好
+3. 换槽位后变成 `LaneErr at lane: 1..15` → **有对端了，但训练失败**
+
+**解决**
+- 插到 CPU 直连的 x16 槽（`00:03.0`）
+- **接上 48V 辅助供电** ← 这是关键
+- 结果：`LnkSta: Speed 8GT/s, Width x8`，`EqualizationComplete+`
+
+**验证成功的标志**
+```
+$ dmesg | grep habanalabs
+habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+```
+
+---
+
+### Layer 2 — 缺固件
+
+**症状**
+```
+Direct firmware load for habanalabs/gaudi2/gaudi2-boot-fit.itb failed with error -2
+Firmware file habanalabs/gaudi2/gaudi2-boot-fit.itb is not found!
+failed to load boot fit → failed to initialize CPU → failed to initialize the H/W
+habanalabs: Failed to initialize accel0. Device 0000:02:00.0 is NOT usable!
+```
+
+**原因**
+
+内核 6.8 自带的 `habanalabs` 驱动**已包含 Gaudi2 的 PCI ID**：
+```
+$ modinfo habanalabs | grep alias
+alias: pci:v00001DA3d00001020sv*sd*bc*sc*i*    ← 1da3:1020 = Gaudi2
+alias: pci:v00001DA3d00001010sv*sd*bc*sc*i*    ← Gaudi (Gen1)
+alias: pci:v00001DA3d00001000sv*sd*bc*sc*i*    ← Goya
+```
+但 **`/lib/firmware/habanalabs/` 目录不存在** → 驱动拿到设备也喂不进固件。
+
+**解决 — 安装 Intel Gaudi 官方软件栈**
+
+```bash
+# 下载官方安装器
+curl -sSL -o /tmp/hli.sh \
+  https://vault.habana.ai/artifactory/gaudi-installer/latest/habanalabs-installer.sh
+chmod +x /tmp/hli.sh
+
+# 安装基础组件（驱动 + 固件 + 工具）
+sudo /tmp/hli.sh install --type base --force
+```
+
+装完后应存在：
+```
+habanalabs-dkms            1.24.2-481
+habanalabs-firmware        1.24.2-481
+habanalabs-firmware-odm    1.24.2-481
+habanalabs-firmware-tools  1.24.2-481
+habanalabs-graph           1.24.2-481
+habanalabs-qual            1.24.2-481
+habanalabs-rdma-core       1.24.2-481
+habanalabs-thunk           1.24.2-481
+
+/usr/bin/hl-smi
+/lib/firmware/habanalabs/gaudi2/gaudi2-boot-fit.itb   (859 KB)
+/lib/firmware/habanalabs/gaudi2/gaudi2-fit.itb        (10 MB)
+```
+
+**结果** — 固件能刷进去了：
+```
+habanalabs 0000:02:00.0: preboot full version: 'hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024)'
+habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+habanalabs 0000:02:00.0: Successfully loaded firmware to device
+```
+
+---
+
+### Layer 3 — `bad SerDes type` 校验（核心难题）
+
+**症状**
+```
+habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+habanalabs 0000:02:00.0: bad SerDes type 65535          ← 卡在这
+habanalabs 0000:02:00.0: Failed to get cpucp info
+habanalabs 0000:02:00.0: failed to initialize the H/W
+habanalabs: Failed to initialize accel0. Device ... is NOT usable!
+
+# hl-smi 能列到卡，但：
+Module status   : Disabled
+Power Max (54V) : 0 W
+Clocks soc      : 0 MHz
+```
+
+**根因（源码级定位）**
+
+文件：`drivers/accel/habanalabs/gaudi2/gaudi2_cn.c`
+
+```c
+enum {
+    ...
+    HL288_SERDES_TYPE,
+    MAX_NUM_SERDES_TYPE,
+    UNKNOWN_SERDES_TYPE = 0xFFFF      /* = 65535 */
+};
+...
+switch (serdes_type) {
+case HLS2_SERDES_TYPE:        ... break;
+case HLS2_TYPE_1_SERDES_TYPE: ... break;
+case HL288_SERDES_TYPE:       ... break;
+default:
+    hdev->asic_prop.server_type = HL_SERVER_TYPE_UNKNOWN;
+    if (get_from_fw && hdev->gaudi2_setup_type != GAUDI2_SETUP_TYPE_HLS3) {
+        hl_err(hdev, "bad SerDes type %d\n", serdes_type);
+        return -EFAULT;                /* ← 直接放弃初始化 */
+    }
+    break;
+}
+```
+
+**卡上固件报的 `serdes_type` 是 `UNKNOWN_SERDES_TYPE (0xFFFF)`。**
+
+原因：卡的 **CPLD(0x10, 2023-10-30)** 报不出合法配置；
+且因使用 **secured firmware**，驱动也无法直接读 bootstrap 引脚：
+
+```
+habanalabs 0000:02:00.0: can't read card location as FW security is enabled
+```
+
+**版本落差**
+
+| 组件 | 卡上版本 | 驱动版本 |
+|---|---|---|
+| FIT / UBOOT / OS | `1.24.0`（2026-03，被驱动更新） | 1.24.2 |
+| **SPI Preboot** | **`1.14.0`（2024-01-07）** | — |
+| **CPLD** | **`0x10`（2023-10-30）** | — |
+
+**驱动能刷的部分都已更新，只有 CPLD / Preboot 刷不了。**
+
+**试过但无效的方案**
+
+❌ 模块参数 `gaudi2_setup_type=1`（HL225-S）
+```
+MODULE_PARM_DESC(gaudi2_setup_type,
+  "(0 - HLS2, 1 - HL225-S with external loopbacks, 2 - HL325-S with external loopbacks,
+    3 - HLS3, 4 - HL288, default 0)");
+```
+无效 —— 代码里**只有 `HLS3(=3)` 才能豁免这个检查**，其余取值一样被拒。
+
+❌ **装匹配的老驱动（1.18.0）** ← **这个实验最有价值**
+
+1.18.0 是时间上最接近卡内 preboot 1.14.0 的版本（2024-10）。实测：
+```
+habanalabs: preboot 版本 1.14.0 (2024-01)      ← 卡里的，没变
+habanalabs: boot-fit 版本 53.1.1-sec-9         ← 1.18.0 驱动刷进去的
+habanalabs: bad SerDes type 65535              ← 一模一样！
+```
+
+> ✅ **这决定性地证明：`SerDes type = 0xFFFF` 来自硬件（CPLD 采样），
+> 与驱动/固件版本完全无关。换任何驱动版本都不可能修复。**
+
+---
+
+### Layer 4 — `server_type` 导致设备取不到
+
+**症状**（打完 Layer 3 补丁后）
+```
+torch.hpu.is_available() -> True
+hpu.device_count()       -> 1
+a = torch.randn(4096,4096, device="hpu")
+→ RuntimeError: synStatus=8 [Device not found] Device acquire failed.
+```
+
+**根因**
+
+驱动把 `server_type` 留成了 `HL_SERVER_TYPE_UNKNOWN (=0)`，
+而这个值通过 ioctl 传给用户态：
+
+```c
+/* common/habanalabs_ioctl.c */
+hw_ip.server_type = prop->server_type;
+```
+
+Synapse 运行时靠它决定怎么配置设备。
+
+枚举值（`include/uapi/drm/habanalabs_accel.h`）：
+```
+HL_SERVER_TYPE_UNKNOWN   = 0
+HL_SERVER_GAUDI2_HLS2    = 5    /* HLS2, 8 OAMs, all ports enabled */
+HL_SERVER_GAUDI2_TYPE1   = 7    /* HLS2, 8 OAMs, 21 ports, all internal */
+HL_SERVER_GAUDI2_HL288   = 14   /* HL288, 4 OAMs, 22 ports */
+```
+
+---
+
+### Layer 5 — 版本必须完全匹配
+
+**症状**
+```
+OSError: libhl_logger.so: cannot open shared object file
+→ 换成 →
+undefined symbol: hl_logger::v1_0::getLogsFolderPathFromEnv()
+```
+
+**结论：驱动、固件、Python 插件三者版本必须完全一致。**
+
+Habana 的版本对应关系：
+
+| 版本 | 支持 Ubuntu 24.04 | PyTorch 版本 |
+|---|---|---|
+| 1.14 ~ 1.17 | ❌ 不支持 | — |
+| **1.18.0** | ✅ **最早支持** | torch **2.4.0** |
+| 1.19 ~ 1.21 | ✅ | — |
+| 1.24.2 | ✅ | torch 2.13 |
+
+**1.18.0 的 PyTorch 模块下载地址**
+```
+https://vault.habana.ai/artifactory/gaudi-pt-modules/1.18.0/524/pytorch/ubuntu2404/
+  └─ pytorch_modules-v2.4.0_1.18.0_524.tgz     (206 MB)
+```
+
+解包后包含：
+```
+torch-2.4.0a0+git74cd574-cp312-cp312-linux_x86_64.whl
+habana_torch_plugin-1.18.0.524-cp312-cp312-linux_x86_64.whl
+habana_torch_dataloader-1.18.0.524-cp312-cp312-linux_x86_64.whl
+habana_gpu_migration-1.18.0.524-cp312-cp312-linux_x86_64.whl
+torchvision-0.19.0a0+48b1edf-cp312-cp312-linux_x86_64.whl
+...
+```
+
+**安装要点（避开坑）**
+```bash
+# ⚠️ 官方 install.sh 会因 --no-build-isolation / versioneer 失败，
+#    直接装核心 wheels 更可靠：
+cd /tmp/pt1180
+sudo python3.12 -m pip install --break-system-packages --no-deps \
+  torch-2.4.0a0+git74cd574-cp312-cp312-linux_x86_64.whl \
+  habana_torch_plugin-1.18.0.524-cp312-cp312-linux_x86_64.whl \
+  habana_torch_dataloader-1.18.0.524-cp312-cp312-linux_x86_64.whl \
+  habana_gpu_migration-1.18.0.524-cp312-cp312-linux_x86_64.whl \
+  torchvision-0.19.0a0+48b1edf-cp312-cp312-linux_x86_64.whl
+```
+
+---
+
+### Layer 6 — `cannot initialize shared layer`（已解决 ✅）
+
+**症状**
+```
+terminate called after throwing an instance of 'c10::Error'
+  what():  cannot initialize shared layer
+Exception raised from SharedLayerInitialization
+  at /npu-stack/pytorch-integration/hpu_ops/op_validator.cpp:34
+```
+
+**机制**
+
+插件在运行时**动态加载** `libsynapse_utils.so`：
+```
+LibSynapseUtilsLoader::GetInstance()
+_ZN12_GLOBAL__N_121LibSynapseUtilsLoaderC2Ev.part.0
+```
+然后调用其中的 `synSharedLayerInit`（Shared Layer Unit）。
+
+**真正的错误**（必须看 `/var/log/habana_logs/synapse_utils_log.txt`，插件本身不会打印）
+```
+[SHARED_LAYER_API][critical] exception thrown in function: synSharedLayerInit
+what: Failed loading GC agent library <> dlerror:
+      libhl-thunk.so: cannot open shared object file: No such file or directory
+```
+
+**根因：`habanalabs-thunk` 包未配置 → `libhl-thunk.so` 未生成**
+
+依赖链断在 `pandoc`：
+```
+habanalabs-thunk (iU)  →  habanalabs-rdma-core (iU)  →  pandoc (未安装)
+```
+
+而 `habanalabs-thunk` 的 postinst 需要**从源码编译**这个库：
+```bash
+# /var/lib/dpkg/info/habanalabs-thunk.postinst
+configure)
+    pushd /opt/habanalabs/src/hl-thunk/
+    EXTRA_CMAKE_FLAGS="-DHLTESTS_LIB_MODE=ON -DHLTESTS_IB=ON" ./build.sh
+    install build/lib/libhl-thunk.so /usr/lib/habanalabs/
+```
+
+**解决步骤**
+```bash
+# 1) 解掉依赖阻塞
+sudo apt-get -f install -y
+sudo apt-get install -y pandoc pandoc-data liblua5.4-0
+
+# 2) 手动编译 hl-thunk（postinst 因 IB 头文件缺失会在 tests 目标失败，
+#    但主库 libhl-thunk.so 已经编译出来了）
+cd /opt/habanalabs/src/hl-thunk/
+sudo bash -c 'EXTRA_CMAKE_FLAGS="-DHLTESTS_LIB_MODE=ON -DHLTESTS_IB=ON" ./build.sh' 2>&1 | tail
+# → BUILD_EXIT=2（tests 失败），但 build/lib/libhl-thunk.so 已生成
+
+# 3) 手动安装
+sudo install -m 0755 /opt/habanalabs/src/hl-thunk/build/lib/libhl-thunk.so /usr/lib/habanalabs/
+sudo install -m 0755 /opt/habanalabs/src/hl-thunk/build/lib/libhl-thunk-err_injection.so /usr/lib/habanalabs/
+sudo ldconfig
+
+# 4) 修 ld.so.conf.d（包未配置时文件是 .dpkg-new，配置不生效）
+sudo bash -c 'for f in /etc/ld.so.conf.d/*.dpkg-new; do mv "$f" "${f%.dpkg-new}"; done; ldconfig'
+```
+
+**结果** — shared layer 通过 ✅：
+```
+torch              : 2.4.0a0+git74cd574
+hpu.is_available() : True
+hpu.device_count() : 1
+```
+
+---
+
+### Layer 7 — RDMA / 互联（❌ 卡死，本轮终点）
+
+**症状**（shared layer 解决后的下一个错误）
+```
+hcl_device_control_factory.cpp::84(initDevice):
+  The condition [ g_ibv.init(deviceConfig) == hcclSuccess ] failed.
+  ibv initialization failed
+RuntimeError: synStatus=26 [Generic failure] Device acquire failed.
+```
+
+**诊断**
+
+```
+$ ls /sys/class/infiniband/
+(空)                                    ← 内核里 0 个 RDMA 设备
+
+$ ip -o link show | grep -c hbl
+0                                       ← habanalabs_cn 创建了 0 个 NIC 网络设备
+
+$ dmesg | grep habanalabs_cn
+habanalabs_cn: loading driver, version: 1.18.0-95323a5
+                 ↑ 只有"加载"，没有任何创建设备的日志
+
+$ lsmod | grep habanalabs_ib
+habanalabs_ib    94208    0             ← IB 模块加载了，但没注册设备
+```
+
+**驱动侧机制**（`drivers/infiniband/hw/hbl/hbl_main.c`）
+```c
+static int hbl_ib_dev_init(struct hbl_ib_device *hdev)
+{
+    ...
+    rc = hbl_ib_set_netdevs(hdev);        /* 需要 CN 创建 netdev */
+    if (rc) return rc;
+    rc = ib_register_device(ibdev, name, ...);
+    if (rc) {
+        dev_err(hdev->dev, "Failed to register IB device, err %d\n", rc);
+        goto ibdev_register_fail;
+    }
+}
+```
+→ **没有 netdev 就没有 RDMA 设备。**
+
+**试过但无效的方案**
+
+| 方案 | 结果 |
+|---|---|
+| 装 Habana ibverbs provider（`libhbl-rdmav34.so`） | ❌ 无效（内核无设备可绑） |
+| `nic_ports_mask=0` | ❌ 无效 |
+| `card_type=0`（声明 PCI 卡） | ⚠️ 部分有效（让 init 通过），但不解决 RDMA |
+| `HCCL_OVER_OFI=1` + libfabric 1.17 | ❌ 无效 —— 只影响 HCCL，不影响 HCL 的 ibv 层 |
+| `gaudi2_setup_type=1` | ❌ 无效 |
+
+**关于单卡**
+
+Habana 的 HCL 在 `Device acquire` 阶段**无条件调用 `g_ibv.init()`**，
+即使只用单卡也会走这条路。这是架构设计，不是配置问题。
+
+> ⚠️ 上面这段结论后来被推翻了 —— 单卡确实可以绕过，见下一节。
+
+---
+
+### Layer 7-SOLVED — 互联问题最终解决方案 ✅
+
+这是整场排查的**最大突破口**。
+
+#### 定位过程（逐层缩小）
+
+```
+1) ls /sys/bus/auxiliary/devices/   → 空!
+   驱动 habanalabs_cn.cn 已注册，但没有设备可绑
+   ⇒ habanalabs 驱动从未创建 CN 的 aux 设备
+
+2) 源码 hl_cn_init()（cn.c:827）
+   cn->ports_mask &= GENMASK(cn_props->max_num_of_ports - 1, 0);
+   ...
+   if (!hdev->cn.ports_mask)
+       return 0;            ← ★ 提前返回！不创建 aux 设备
+   ...
+   rc = hl_cn_aux_drv_init(hdev);   ← 只有走到这里才创建 aux 设备
+
+3) ports_mask 为什么是 0？
+   源码 gaudi2_cn.c:254
+   hdev->cn.ports_mask &= cn_cpucp_info->link_mask[0];
+   ⇒ 固件因 SerDes 未知返回 link_mask[0] = 0  →  ports_mask = 0
+
+4) 另外 ports_ext_mask 也被强制成全 1
+   源码 gaudi2_cn.c（约 356 行）
+   if (hdev->card_type == cpucp_card_type_pci || ...)
+       ports_ext_mask = hdev->cn.ports_mask;   ← 全部标记为"外部"
+   ⇒ 内部(scale-up)端口数 = 0  →  SCAL 找不到 nic_scaleup cluster
+```
+
+#### 完整因果链（闭合）
+
+```
+① 卡硬件 strapping → SerDes type = 0xFFFF
+        ↓
+② 固件 CPUCP 返回 link_mask[0] = 0                 gaudi2_cn.c:254
+        ↓
+③ ports_mask &= 0  →  ports_mask = 0
+        ↓
+④ hl_cn_init(): if (!ports_mask) return 0;          cn.c:851
+        ↓
+⑤ 不执行 hl_cn_aux_drv_init() → 不创建 CN aux 设备
+        ↓
+⑥ /sys/bus/auxiliary/devices/ 为空（驱动干等设备）
+        ↓
+⑦ 0 个 NIC netdev（habanalabs_cn 无设备可 probe）
+        ↓
+⑧ habanalabs_ib 无 netdev → 0 个 RDMA 设备
+        ↓
+⑨ HCL g_ibv.init() 失败
+        ↓
+⑩ synStatus=26 Device acquire failed
+```
+
+#### 三道修复（缺一不可）
+
+**修复①：源码补丁③ —— 固件 link_mask=0 时不清零 ports_mask**
+
+文件：`drivers/accel/habanalabs/gaudi2/gaudi2_cn.c`（1.18.0 约 251-262 行）
+
+```c
+/* 原来 */
+} else {
+	hdev->cn.ports_mask &= cn_cpucp_info->link_mask[0];
+	hdev->cn.ports_ext_mask &= cn_cpucp_info->link_ext_mask[0];
+	hdev->cn.auto_neg_mask &= cn_cpucp_info->auto_neg_mask[0];
+}
+
+/* 改为 */
+} else {
+	if (cn_cpucp_info->link_mask[0]) {
+		hdev->cn.ports_mask     &= cn_cpucp_info->link_mask[0];
+		hdev->cn.ports_ext_mask &= cn_cpucp_info->link_ext_mask[0];
+		hdev->cn.auto_neg_mask  &= cn_cpucp_info->auto_neg_mask[0];
+	} else {
+		dev_warn(hdev->dev,
+			"PATCHED: FW link_mask=0, keeping ports_mask=0x%llx",
+			(unsigned long long)hdev->cn.ports_mask);
+	}
+}
+```
+
+> ⚠️ 注意 `ports_mask` 是 `u64`，格式化必须用 `%llx` 并强转，
+> 否则 `-Werror=format=` 会让编译失败。`dev_warn` 自带换行，**不要在字符串里写 `\n`**
+> （如果通过多层 shell 传递，`\n` 容易被转成真实换行从而破坏 C 字符串）。
+
+**修复②：模块参数 `nic_ports_ext_mask=0`**
+
+```bash
+# /etc/modprobe.d/habanalabs-options.conf
+options habanalabs nic_ports_ext_mask=0
+```
+
+**原理**：
+```
+ports_ext_mask = 0  →  所有端口都算"内部"(scale-up)
+                    →  SCAL 能建出 nic_scaleup cluster
+```
+
+**修复③：去掉 `card_type=0`**
+
+`card_type=0`（PCI 卡）会触发这段代码，把所有端口强制标成"外部"，
+反而抹掉了 scale-up 端口：
+
+```c
+/* gaudi2_cn.c 约 356 行 */
+if (hdev->card_type == cpucp_card_type_pci ||
+        hdev->gaudi2_setup_type != GAUDI2_SETUP_TYPE_HLS2) {
+    ports_ext_mask = hdev->cn.ports_mask;   /* 全部→外部 */
+}
+```
+
+⇒ **必须留着默认的 `card_type=1` (PMC)**。
+
+#### 验证成功的标志
+
+```bash
+$ ls /sys/bus/auxiliary/devices/
+habanalabs.cn.0
+habanalabs_cn.en.0
+habanalabs_cn.ib.0
+
+$ ls /sys/class/infiniband/
+hbl_0
+
+$ ls /dev/infiniband/
+uverbs0  by-ibdev  by-path
+
+$ ip -o link show | grep -c ens2
+24                                 ← ens2 ~ ens2d23
+
+$ cat /sys/class/infiniband/hbl_0/ports_mask
+afffff
+$ cat /sys/class/infiniband/hbl_0/ext_ports_mask
+0                                  ← ★ 必须是 0!
+
+$ dmesg | grep -E 'PATCHED|IB device'
+habanalabs: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+habanalabs 0000:02:00.0 hbl_0: IB device registered
+```
+
+#### 效果：之前失败的步骤现在全部通过
+
+```
+[SYN_API][info] synInitialize, status 0[synSuccess]                  ✅
+[SYN_API][info] synDeviceAcquireByDeviceType, status 0[synSuccess]   ✅  ← 关键!
+[PT_BRIDGE] device_name : GAUDI2                                     ✅
+[PT_BRIDGE] randn on hpu    : OK                                     ✅
+[PT_BRIDGE] mark_step       : OK                                     ✅
+```
+
+---
+
+### Layer 8-SOLVED — 图编译问题最终解决 ✅（真·最后一块拼图）
+
+#### 症状
+
+```
+[SYN_RECIPE][error]   compileGraph: Can not compile graph
+[SYN_API   ][error]   synGraphCompile: failed status: 26[synFail]
+[PT_BRIDGE][critical] Graph compile failed
+```
+
+`graph_compiler.log` **完全空白（0 字节）**，加 `GC_LOG_PER_THREAD=1` / `LOG_LEVEL_GC=10`
+也毫无输出——图编译器是个不吐日志的黑盒，极难定位。
+
+#### 排查过程中找到的线索（虽都不是根因，但值得记录）
+
+| 线索 | 结论 |
+|---|---|
+| `BOX_TYPE_ID` 被覆盖 | 它是 GCFG 内部配置，需 `ENABLE_EXPERIMENTAL_FLAGS=true` 才能用环境变量设，设了确实生效，但不是根因 |
+| HCL 支持 `BACK_2_BACK` / `LOOPBACK` 盒型 | 确实存在给单卡/直连场景用的盒型，方向对 |
+| `~/.synapse.ini` 缺失 | Synapse 全局配置文件，但缺失不是致命错误 |
+| `GC_KERNEL_PATH` | ★ **真·根因就藏在这里** |
+
+#### 🔑 真正的根因：环境变量没加载！
+
+`/etc/profile.d/habanalabs.sh` 里有一整套**必需的**环境变量：
+
+```bash
+export GC_KERNEL_PATH=/usr/lib/habanalabs/libtpc_kernels.so        # ★ 图编译器的 TPC 内核库（537 MB！）
+export HABANA_LOGS=/var/log/habana_logs/
+export HABANA_SCAL_BIN_PATH=/opt/habanalabs/engines_fw
+export HABANA_PLUGINS_LIB_PATH=/opt/habanalabs/habana_plugins     # ★ 图编译器插件目录
+export DATA_LOADER_AEON_LIB_PATH=/usr/lib/habanalabs/libaeon.so
+```
+
+**排查时一直只手动设了 `LD_PRELOAD`，从未 `source /etc/profile.d/habanalabs.sh`**
+⇒ 图编译器找不到内核库和插件 ⇒ `synGraphCompile` 失败。
+
+> 💡 这个文件由 **login shell** 自动加载。用 `sudo bash -lc '...'`
+> （`-l` = login shell）或先 `source` 它，问题就消失了。
+
+#### 解决方案
+
+```bash
+source /etc/profile.d/habanalabs.sh        # ← 或直接用 bash -lc 启动
+
+# 然后就可以跑了
+python3 your_script.py
+```
+
+#### 最终验证
+
+```
+hpu device name    : GAUDI2
+matmul 4096x4096   : OK, sum = 56490.2890625
+relu               : OK, max = 319.8988952636719
+fwd+bwd            : OK, loss = 28.938304901123047
+RESULT: HPU WORKS
+```
+
+**矩阵乘法、激活函数、前向+反向传播（神经网络训练）全部跑通。**
+
+---
+
+## 4. 最终因果链（每一环都有证据）
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│ ① 【硬件层·根因】                                             │
+│    卡 CPLD 采样出的 SerDes type = 0xFFFF (UNKNOWN)            │
+│    证据：1.18.0 与 1.24.2 两版驱动报完全相同的错误             │
+│          换驱动无效 → 硬件决定，非软件                        │
+├──────────────────────────────────────────────────────────────┤
+│ ② 【驱动层】                                                  │
+│    habanalabs_cn 创建 0 个 NIC 网络设备                        │
+│    证据：ip -o link show | grep -c hbl  →  0                  │
+├──────────────────────────────────────────────────────────────┤
+│ ③ 【RDMA 注册层】                                             │
+│    habanalabs_ib 无 netdev 可绑定 → 注册 0 个 RDMA 设备        │
+│    证据：ls /sys/class/infiniband/  →  空                     │
+├──────────────────────────────────────────────────────────────┤
+│ ④ 【互联层·直接死因】                                          │
+│    HCL: g_ibv.init() 找不到 RDMA 设备                         │
+│    证据：ibv initialization failed                            │
+├──────────────────────────────────────────────────────────────┤
+│ ⑤ RuntimeError: synStatus=26 [Generic failure]                │
+│    Device acquire failed                                       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 5. 有效手段汇总（可复用）
+
+### 5.1 两处必备的驱动源码补丁
+
+文件：`/usr/src/habanalabs-<ver>/drivers/accel/habanalabs/gaudi2/gaudi2_cn.c`
+
+```c
+	default:
+		/* 补丁①：绕过 bad SerDes 检查 */
+		/* 原来：hdev->asic_prop.server_type = HL_SERVER_TYPE_UNKNOWN; */
+		hdev->asic_prop.server_type = HL_SERVER_GAUDI2_HLS2;   /* PATCHED */
+
+		/* SW-169172: For HLS3 setup don't fail device init on invalid serdes_type. */
+		if (get_from_fw && hdev->gaudi2_setup_type != GAUDI2_SETUP_TYPE_HLS3) {
+			dev_err(hdev->dev, "bad SerDes type %d\n", serdes_type);
+			/* 补丁②：原来此处是 return -EFAULT; */
+			dev_warn(hdev->dev, "PATCHED-ignore-bad-serdes");   /* PATCHED */
+		}
+		break;
+```
+
+**1.18.0 版本还需修一个编译冲突**（kernel 6.8 新增了 MIN/MAX 宏）：
+```bash
+# /usr/src/habanalabs-1.18.0-524/drivers/accel/habanalabs/gaudi2/gaudi2_hbm_bringup.c
+# 删除第 74、75 行：
+#   #define MIN(a, b) ((a < b) ? a : b)
+#   #define MAX(a, b) ((a > b) ? a : b)
+sudo sed -i "/^#define MIN(a, b)/d; /^#define MAX(a, b)/d" <该文件>
+```
+
+**重新编译安装**
+```bash
+sudo dkms build  habanalabs/<ver> -k $(uname -r) --force
+sudo dkms install habanalabs/<ver> -k $(uname -r) --force
+```
+
+> ⚠️ **重要**：DKMS 每次会从 `/usr/src/` **复制**源码到 `/var/lib/dkms/.../build`。
+> **必须改 `/usr/src/` 下的源文件**，改 `build/` 目录会被覆盖。
+
+### 5.2 模块参数
+
+```bash
+# /etc/modprobe.d/habanalabs-options.conf
+options habanalabs card_type=0
+```
+- `card_type`：0 = PCI 卡，1 = PMC 夹层卡（**默认 PMC，但 HL-225 是 PCI 卡**）
+- `nic_ports_mask`：NIC 端口掩码（默认 `0xFFFFFF` 全开）
+
+### 5.3 环境变量
+
+```bash
+export LD_PRELOAD=/lib/x86_64-linux-gnu/libtcmalloc.so.4
+export LD_LIBRARY_PATH=/usr/lib/habanalabs:/opt/habanalabs/lib
+export HABANA_LOGS=/var/log/habana_logs
+```
+
+### 5.4 关键诊断命令
+
+```bash
+sudo hl-smi                      # 概览
+sudo hl-smi -q                   # 完整信息（Firmware / CPLD / Power / Network）
+sudo hl-smi -L                   # 精简
+
+lspci -nnk -s 02:00.0            # 卡的 PCI 信息
+lsmod | grep habana              # 驱动模块
+ls /sys/class/infiniband/        # RDMA 设备（Gaudi2 应有 hbl_0 之类）
+ip -o link show | grep hbl       # NIC 网络设备
+cat /sys/module/habanalabs/parameters/nic_ports_mask
+
+# 驱动日志
+sudo dmesg | grep -i habanalabs
+
+# Habana 运行时日志（排错必看！）
+ls -lt /var/log/habana_logs/
+cat /var/log/habana_logs/synapse_utils_log.txt
+cat /var/log/habana_logs/hl_logger.log
+```
+
+### 5.5 僵死状态的恢复
+
+设备 acquire 失败后，显存会停在 `98304MiB / 98304MiB` 不释放，
+此时任何新进程都报 `Device not found`。
+
+```bash
+sudo pkill -9 -f hputest.py
+sudo rmmod habanalabs_ib habanalabs_en habanalabs_cn habanalabs
+sudo modprobe habanalabs_compat && sudo modprobe habanalabs   # 等 30s
+# 若 rmmod 报 "Module in use" → 只能重启
+sudo reboot
+```
+
+---
+
+## 6. 无效方案汇总（避免重复踩坑）
+
+| 方案 | 结论 |
+|---|---|
+| 反复重启（6 次） | ❌ 状态一位不变 |
+| `echo 1 > /sys/bus/pci/rescan` | ❌ 无效 |
+| 强制 Gen1 速率 + Retrain Link | ❌ 无效 |
+| Secondary Bus Reset | ❌ 无效 |
+| 只打补丁不改 `server_type` | ❌ 设备仍取不到 |
+| **装匹配的老驱动 1.18.0** | ❌ **无效，且证明了根因是硬件** |
+| `gaudi2_setup_type=1`（HL225-S） | ❌ 只有 HLS3 能豁免检查 |
+| `nic_ports_mask=0` | ❌ 无效 |
+| `HCCL_OVER_OFI=1` + libfabric | ❌ 只影响 HCCL，不影响 HCL 的 ibv 层 |
+| 装 Habana ibverbs provider | ❌ 内核里没有 RDMA 设备可绑 |
+| 官方 `install.sh --type pytorch` | ⚠️ 因脚本 bug 失败，改用手动 pip 安装 |
+
+---
+
+## 7. 关键路径速查
+
+| 内容 | 路径 |
+|---|---|
+| DKMS 源码 | `/usr/src/habanalabs-<ver>/` |
+| 要改的文件 | `.../drivers/accel/habanalabs/gaudi2/gaudi2_cn.c` |
+| 固件 | `/lib/firmware/habanalabs/gaudi2/` |
+| 工具 | `/usr/bin/hl-smi`、`/usr/bin/hl-prof-config` |
+| 库 | `/usr/lib/habanalabs/` |
+| 测试工具 | `/opt/habanalabs/qual/gaudi2/bin/hl_qual` |
+| hl-thunk 源码 | `/opt/habanalabs/src/hl-thunk/` |
+| rdma-core 源码 | `/opt/habanalabs/rdma-core/src/` |
+| 运行时日志 | `/var/log/habana_logs/` |
+| 安装日志 | `/root/habanalabs-installer-log/` |
+| 官方安装器 | `https://vault.habana.ai/artifactory/gaudi-installer/<ver>/habanalabs-installer.sh` |
+| PyTorch 模块 | `https://vault.habana.ai/artifactory/gaudi-pt-modules/<ver>/<id>/pytorch/ubuntu2404/` |
+| apt 仓库 | `deb https://vault.habana.ai/artifactory/debian noble main` |
+| 可用驱动版本 | `apt-cache madison habanalabs-dkms`（1.18.0-524 ~ 1.24.2-481 都在） |
+
+---
+
+## 8. 当前状态与后续建议
+
+### 8.1 当前机器状态（2026-10-09 更新）
+
+| 项 | 状态 |
+|---|---|
+| 驱动 | `habanalabs 1.18.0-524`（已打 **3 个补丁** + MIN/MAX 编译修复） |
+| 固件 | `1.18.0-524`（FIT/UBOOT/OS = 53.1.1） |
+| 模块参数 | `/etc/modprobe.d/habanalabs-options.conf` → **`nic_ports_ext_mask=0`** |
+| Python 栈 | `torch 2.4.0` + `habana-torch-plugin 1.18.0.524` |
+| `hl-smi` | ✅ 96GB HBM / 温度 / 600W / `Module status: Operational` |
+| **NIC netdev** | ✅ **24 个**（`ens2` ~ `ens2d23`） |
+| **RDMA** | ✅ **`hbl_0`** + `/dev/infiniband/uverbs0` |
+| **设备获取** | ✅ **`synDeviceAcquireByDeviceType, status 0[synSuccess]`** |
+| **HPU 算子** | ✅ `randn` / `mark_step` / `matmul` / `relu` **全部成功** |
+| **训练** | ✅ **前向+反向传播跑通**（fwd+bwd OK） |
+| **图编译** | ✅ **已解决**（必须 `source /etc/profile.d/habanalabs.sh`） |
+
+### 8.1a ⚠️ 跑之前**必须**做的两件事
+
+**1. 加载 Habana 环境变量（否则图编译必失败！）**
+```bash
+source /etc/profile.d/habanalabs.sh
+# 或者用 login shell：sudo bash -lc 'python3 xxx.py'
+```
+
+**2. 准备日志目录 + tcmalloc**
+```bash
+sudo mkdir -p /var/log/habana_logs && sudo chmod 777 /var/log/habana_logs
+export LD_PRELOAD=/lib/x86_64-linux-gnu/libtcmalloc.so.4
+```
+
+**最小可运行示例：**
+```bash
+sudo bash -lc '
+  source /etc/profile.d/habanalabs.sh
+  export LD_PRELOAD=/lib/x86_64-linux-gnu/libtcmalloc.so.4
+  python3 -c "
+import torch, habana_frameworks.torch.core as htcore
+print(torch.hpu.get_device_name(0))
+a = torch.randn(4096,4096, device=\"hpu\"); b = torch.randn(4096,4096, device=\"hpu\")
+c = (a@b); htcore.mark_step()
+print(c.sum().cpu())
+"
+'
+```
+
+### 8.1b 当前生效的完整配置（重装时直接照抄）
+
+**三处源码补丁**（`/usr/src/habanalabs-1.18.0-524/.../gaudi2_cn.c`）：
+```
+补丁①  return -EFAULT;                → dev_warn(...)           （绕过 bad SerDes）
+补丁②  HL_SERVER_TYPE_UNKNOWN          → HL_SERVER_GAUDI2_HLS2    （server_type）
+补丁③  ports_mask &= link_mask[0]      → if (link_mask[0]) {...} else {warn}  （保留端口）
+```
+
+**编译修复**（`gaudi2_hbm_bringup.c`）：删除与 kernel 6.8 冲突的 `MIN`/`MAX` 宏定义（第 74/75 行）
+
+**模块参数**：
+```bash
+# /etc/modprobe.d/habanalabs-options.conf
+options habanalabs nic_ports_ext_mask=0
+```
+
+**驱动重载顺序**（重要）：
+```bash
+sudo modprobe habanalabs_cn && sudo modprobe habanalabs_en && sudo modprobe habanalabs_ib
+sudo modprobe habanalabs        # 这一句会触发固件加载，等 50s
+```
+
+**运行环境**：
+```bash
+mkdir -p /var/log/habana_logs && chmod 777 /var/log/habana_logs
+export HABANA_LOGS=/var/log/habana_logs
+export LD_PRELOAD=/lib/x86_64-linux-gnu/libtcmalloc.so.4
+export LD_LIBRARY_PATH=/usr/lib/habanalabs:/opt/habanalabs/lib
+```
+
+### 8.2 结论
+
+**问题在硬件层面。** 这张卡的 CPLD 采样出的配置值不在 Intel 的合法枚举里，
+可能是白牌/OEM/工程样片，或 CPLD 本身故障。
+
+**软件层面已穷尽所有可能。**
+
+### 8.3 平台差距评估
+
+| 项 | 本机 | Gaudi2 官方要求 |
+|---|---|---|
+| 平台 | Haswell-EP（2014） | Xeon Scalable 第 4/5 代 |
+| PCIe | Gen3 **x8** | Gen4 **x16** |
+| CPU | 单路 | 通常双路 |
+| 卡配置 | **未知（0xFFFF）** | 必须合法枚举值 |
+
+### 8.4 后续可选路径
+
+| 方案 | 说明 |
+|---|---|
+| ⭐ **升级卡的 CPLD / SPI Preboot 固件** | 唯一可能真正解决问题的手段。需要 Intel 烧写工具与镜像（`FW-drops` 仓库需认证）。升级后 SerDes 合法 → NIC netdev → RDMA 设备 → ibv 成功 → **所有上层问题自动消失** |
+| 联系 Intel / Habana 支持 | 报告该卡 SerDes type 异常（附本文档的证据链） |
+| 找一张已知正常的 Gaudi2 对照 | 用于定性「是这张卡的问题」还是「这类卡的问题」 |
+| 停止投入 | 考虑到平台差距 10 年，这可能是最理性的选择 |
+
+---
+
+## 附录 A：本次排查的净成果
+
+**打通了 8 层中的 7 层：**
+
+```
+✅ PCIe 识别          ← 从 lspci 完全看不到 → Gen3 x8 正常
+✅ 驱动 & 固件         ← 从 no firmware → 固件成功刷入卡
+✅ 设备初始化          ← 从 bad SerDes 拒绝 → 驱动接受设备
+✅ hl-smi 全部读数      ← 96GB HBM / 温度 / 600W / 48 端口
+✅ 完整软件栈          ← torch + habana 完全匹配
+✅ Shared Layer       ← 从 cannot initialize → 通过
+❌ RDMA / 互联        ← 卡死在硬件根因上
+```
+
+**最有价值的两个发现：**
+1. **1.18.0 对照实验** —— 决定性地证明 SerDes 问题在硬件，不在驱动
+2. **`libhl-thunk.so` 缺失** —— 用 `synapse_utils_log.txt` 定位到具体库名
+
+---
+
+## 附录 B：Git 风格的「变更记录」
+
+```
+2026-10-09  Intel Gaudi2 HL-225 部署排查
+
+[硬件]
+  + 卡移入 CPU 直连 x16 槽 (00:03.0)
+  + 接入 48V 辅助供电  → PCIe 链路从 x0 变为 Gen3 x8
+
+[软件]
+  + 安装 Intel Gaudi 软件栈 1.24.2 → 固件可刷入
+  + 补丁① gaudi2_cn.c: return -EFAULT → dev_warn   (绕过 bad SerDes)
+  + 补丁② gaudi2_cn.c: server_type UNKNOWN → HLS2  (设备可获取)
+  + 修 gaudi2_hbm_bringup.c: 删除与 kernel 6.8 冲突的 MIN/MAX 宏
+  + 模块参数 card_type=0
+
+[验证实验]
+  + 安装 1.18.0 对照 → 同样报 bad SerDes 65535
+  ⇒ 结论: 硬件问题, 非驱动版本问题
+
+[降级到自洽版本]
+  - 卸载 1.24.2 全套
+  + 安装 1.18.0 全套 (源码 + 固件 + 工具)
+  + 安装 torch 2.4.0 + habana-torch-plugin 1.18.0.524
+
+[修复 shared layer]
+  + 装 pandoc / pandoc-data / liblua5.4-0
+  + 手动编译 hl-thunk → libhl-thunk.so
+  + 安装到 /usr/lib/habanalabs/ + ldconfig
+  + 修正 /etc/ld.so.conf.d/*.dpkg-new → *.conf
+  ⇒ shared layer 通过
+
+[卡在互联层]
+  - /sys/class/infiniband/ 为空
+  - habanalabs_cn 创建 0 个 NIC netdev
+  - HCL g_ibv.init() 失败
+  ✗ HCCL_OVER_OFI=1 无效
+  ✗ Habana ibverbs provider 无效
+  ⇒ 根因回到硬件: SerDes = 0xFFFF
+```
