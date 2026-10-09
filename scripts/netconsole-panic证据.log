@@ -1,0 +1,684 @@
+
+===== netconsole 会话开始 2026-10-09 20:24:40.632554 =====
+[20:24:58.464] [  281.970898] NETCONSOLE-TEST-A 显示优先级0
+[20:24:59.465] [  282.970828] NETCONSOLE-TEST-B 优先级3
+[20:25:15.755] [  299.261338] NETCONSOLE-LVL6-TEST 级别6应该能收到了
+[20:26:41.912] [  385.417006] nvidia-nvlink: Nvlink Core is being initialized, major device number 511
+[20:26:41.917] [  385.417046] NVRM: No NVIDIA GPU found.
+[20:26:41.918] [  385.423766] nvidia-nvlink: Unregistered Nvlink Core, major device number 511
+[20:26:42.152] [  385.657208] nvidia-nvlink: Nvlink Core is being initialized, major device number 511
+[20:26:42.156] [  385.657244] NVRM: No NVIDIA GPU found.
+[20:26:42.157] [  385.663031] nvidia-nvlink: Unregistered Nvlink Core, major device number 511
+[20:27:08.558] [  412.062801] CIFS: Attempting to mount //192.168.1.30/sas/ubuntu
+[20:28:07.854] [  471.358120] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[20:28:08.969] [  472.473000] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[20:28:10.046] [  473.549155] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[20:28:11.120] [  474.624102] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[20:28:20.670] [  484.174424] habanalabs: loading driver, version: 1.24.1-b336d5e
+[20:28:20.671] [  484.174732] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[20:28:20.671] [  484.174863] habanalabs 0000:02:00.0: enabling device (0100 -> 0102)
+[20:28:20.738] [  484.241961] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[20:28:20.896] [  484.399976] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[20:28:34.111] [  497.614140] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[20:28:36.793] [  500.295610] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[20:28:38.011] [  501.513824] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[20:28:38.065] [  501.568223] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[20:28:38.065] [  501.568806] habanalabs 0000:02:00.0: bad SerDes type 65535
+[20:28:38.066] [  501.569375] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[20:28:41.808] [  505.310553] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[20:28:41.825] [  505.328218] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[20:28:52.429] [  515.932226] habanalabs 0000:02:00.0 hbl_0: IB device registered
+[20:28:52.448] [  515.951174] habanalabs 0000:02:00.0: hwmon3: add sensors information
+[20:28:52.448] [  515.951616] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[20:31:27.235] [  670.736408] python3.12: Corrupted page table at address 77d854258000
+[20:31:27.236] [  670.737056] PGD 80000007d0e68067 P4D 80000007d0e68067 PUD 7d0e69067 PMD 844452067 PTE 80004542c0a5d227
+[20:31:27.236] [  670.737688] Bad pagetable: 000f [#1] PREEMPT SMP PTI
+[20:31:27.238] [  670.738317] CPU: 17 PID: 16824 Comm: python3.12 Tainted: G           OE      6.8.0-136-generic #136-Ubuntu
+[20:31:27.238] [  670.738972] Hardware name: GIGABYTE MU70-SU0-NV-XX/MU70-SU0-NV-XX, BIOS R11 08/19/2020
+[20:31:27.239] [  670.739637] RIP: 0033:0x77d854d8984a
+[20:31:27.241] [  670.740343] Code: c5 fe 7f 07 c5 fe 7f 47 20 c5 fe 7f 47 40 c5 fe 7f 47 60 c5 f8 77 c3 66 0f 1f 84 00 00 00 00 00 40 0f b6 c6 48 89 d1 48 89 fa <f3> aa 48 89 d0 c5 f8 77 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90
+[20:31:27.241] [  670.741782] RSP: 002b:00007ffce08eb018 EFLAGS: 00010206
+[20:31:27.242] [  670.742520] RAX: 0000000000000000 RBX: 000000003212f3c0 RCX: 0000000000001000
+[20:31:27.242] [  670.743262] RDX: 000077d854258000 RSI: 0000000000000000 RDI: 000077d854258000
+[20:31:27.243] [  670.744001] RBP: 00007ffce08ebd70 R08: 0000000000000013 R09: 1000000000001000
+[20:31:27.244] [  670.744740] R10: 0000000000000001 R11: 0000000000000203 R12: 0000000000000000
+[20:31:27.245] [  670.745475] R13: 0000000000001000 R14: 00007ffce08ec040 R15: 0000000000000000
+[20:31:27.246] [  670.746206] FS:  000077d854eba080 GS:  0000000000000000
+[20:31:27.252] [  670.746934] Modules linked in: habanalabs(OE) habanalabs_ib(OE) habanalabs_en(OE) habanalabs_cn(OE) habanalabs_compat(OE) cmac netconsole veth nls_utf8 cifs cifs_arc4 nls_ucs2_utils cifs_md4 netfs nf_conntrack_netlink xt_nat xt_tcpudp xt_conntrack xt_MASQUERADE xfrm_user xfrm_algo xt_set ip_set nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype nft_compat nf_tables vhost_net vhost vhost_iotlb tap vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd qrtr ecc overlay bridge stp llc binfmt_misc nls_iso8859_1 intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm ipmi_ssif irqbypass ast mei_me rapl i2c_i801 acpi_power_meter mei intel_cstate intel_pch_thermal joydev i2c_smbus ipmi_si lpc_ich acpi_ipmi input_leds ipmi_devintf ipmi_msghandler acpi_pad mac_hid sch_fq_codel ib_uverbs ib_core msr aic8800_fdrv(OE) cfg80211 dm_multipath aic_load_fw(OE) efi_pstore nfnetlink dmi_sysfs ip_tables x_tables autofs4 btrfs blake2b_
+[20:31:27.252] generic raid10 raid456
+[20:31:27.256] [  670.747086]  async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 hid_generic usbhid uas hid usb_storage crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha256_ssse3 sha1_ssse3 mpt3sas igb ahci raid_class i2c_algo_bit libahci xhci_pci scsi_transport_sas dca xhci_pci_renesas wmi aesni_intel crypto_simd cryptd
+[20:31:27.257] [  670.756848] ---[ end trace 0000000000000000 ]---
+[20:31:27.317] [  670.817633] RIP: 0033:0x77d854d8984a
+[20:31:27.318] [  670.818249] RSP: 002b:00007ffce08eb018 EFLAGS: 00010206
+[20:31:27.319] [  670.819174] RAX: 0000000000000000 RBX: 000000003212f3c0 RCX: 0000000000001000
+[20:31:27.319] [  670.820102] RDX: 000077d854258000 RSI: 0000000000000000 RDI: 000077d854258000
+[20:31:27.321] [  670.821028] RBP: 00007ffce08ebd70 R08: 0000000000000013 R09: 1000000000001000
+[20:31:27.322] [  670.821952] R10: 0000000000000001 R11: 0000000000000203 R12: 0000000000000000
+[20:31:27.323] [  670.822869] R13: 0000000000001000 R14: 00007ffce08ec040 R15: 0000000000000000
+[20:31:27.324] [  670.823775] FS:  000077d854eba080(0000) GS:ffff8a6b1f480000(0000) knlGS:0000000000000000
+[20:31:27.324] [  670.824673] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+[20:31:27.325] [  670.825562] CR2: 000077d854258000 CR3: 0000000841898005 CR4: 00000000001726f0
+[20:31:27.326] [  670.826463] Kernel panic - not syncing: Fatal exception
+[20:31:27.326] [  670.827468] Kernel Offset: 0x30000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[20:31:27.390] [  670.889986] Rebooting in 20 seconds..
+[20:41:11.429] [  488.037937] printk: legacy console [netcon0] enabled
+[20:41:11.429] [  488.037983] netconsole: network logging started
+[20:41:12.431] [  489.040356] NETCONSOLE-REARM 会话重启,准备测试 HPU
+[20:41:14.802] [  491.411078] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[20:41:14.849] [  491.457769] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[20:41:14.855] [  491.463402] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[20:41:14.860] [  491.468997] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[20:41:14.995] [  491.603398] habanalabs: loading driver, version: 1.24.1-b336d5e
+[20:41:14.995] [  491.603590] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[20:41:15.009] [  491.617278] workqueue: work_for_cpu_fn hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[20:41:15.071] [  491.679311] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[20:41:15.215] [  491.822898] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[20:41:28.337] [  504.944912] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[20:41:31.018] [  507.626627] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[20:41:32.233] [  508.841135] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[20:41:32.287] [  508.896075] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[20:41:32.288] [  508.896568] habanalabs 0000:02:00.0: bad SerDes type 65535
+[20:41:32.288] [  508.896987] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[20:41:36.023] [  512.631617] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[20:41:36.041] [  512.649635] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[20:41:46.671] [  523.279261] habanalabs 0000:02:00.0 hbl_0: IB device registered
+[20:41:46.673] [  523.280451] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[20:41:46.673] [  523.281049] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[20:42:04.335] [  540.942980] python3.12: Corrupted page table at address 798d48680000
+[20:42:04.336] [  540.943586] PGD 800000032b992067 P4D 800000032b992067 PUD 10dc56067 PMD 11944b067 PTE 800046678068f227
+[20:42:04.336] [  540.944197] Bad pagetable: 000f [#1] PREEMPT SMP PTI
+[20:42:04.337] [  540.944802] CPU: 13 PID: 7816 Comm: python3.12 Tainted: G           OE      6.8.0-136-generic #136-Ubuntu
+[20:42:04.337] [  540.945431] Hardware name: GIGABYTE MU70-SU0-NV-XX/MU70-SU0-NV-XX, BIOS R11 08/19/2020
+[20:42:04.338] [  540.946071] RIP: 0033:0x798d4898984a
+[20:42:04.340] [  540.946749] Code: c5 fe 7f 07 c5 fe 7f 47 20 c5 fe 7f 47 40 c5 fe 7f 47 60 c5 f8 77 c3 66 0f 1f 84 00 00 00 00 00 40 0f b6 c6 48 89 d1 48 89 fa <f3> aa 48 89 d0 c5 f8 77 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90
+[20:42:04.340] [  540.948113] RSP: 002b:00007ffc3f4f0538 EFLAGS: 00010206
+[20:42:04.340] [  540.948816] RAX: 0000000000000000 RBX: 000000004d3d9800 RCX: 0000000000001000
+[20:42:04.342] [  540.949520] RDX: 0000798d48680000 RSI: 0000000000000000 RDI: 0000798d48680000
+[20:42:04.343] [  540.950222] RBP: 00007ffc3f4f1290 R08: 0000000000000018 R09: 1000000000001000
+[20:42:04.343] [  540.950923] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[20:42:04.344] [  540.951625] R13: 0000000000001000 R14: 00007ffc3f4f1560 R15: 0000000000000000
+[20:42:04.344] [  540.952319] FS:  0000798d48a847c0 GS:  0000000000000000
+[20:42:04.352] [  540.953014] Modules linked in: habanalabs(OE) habanalabs_ib(OE) habanalabs_en(OE) habanalabs_cn(OE) habanalabs_compat(OE) netconsole tls veth nls_utf8 cifs cifs_arc4 nls_ucs2_utils cifs_md4 netfs nf_conntrack_netlink xt_nat xt_tcpudp xt_conntrack xt_MASQUERADE xfrm_user xfrm_algo xt_set ip_set nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype nft_compat nf_tables vhost_net vhost vhost_iotlb tap vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd qrtr ecc overlay intel_rapl_msr intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp bridge coretemp stp llc kvm_intel kvm irqbypass binfmt_misc ipmi_ssif ast mei_me rapl i2c_i801 acpi_power_meter mei intel_cstate intel_pch_thermal joydev i2c_smbus ipmi_si lpc_ich acpi_ipmi ipmi_devintf input_leds ipmi_msghandler acpi_pad mac_hid sch_fq_codel ib_uverbs ib_core msr aic8800_fdrv(OE) cfg80211 dm_multipath aic_load_fw(OE) efi_pstore nfnetlink dmi_sysfs ip_tables x_tables autofs4 btrfs blake2b_generic raid10
+[20:42:04.352] raid456 async_raid6_recov
+[20:42:04.354] [  540.953172]  async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 uas usb_storage hid_generic usbhid hid crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha256_ssse3 igb sha1_ssse3 mpt3sas ahci i2c_algo_bit libahci raid_class dca xhci_pci scsi_transport_sas xhci_pci_renesas wmi aesni_intel crypto_simd cryptd [last unloaded: habanalabs_compat(OE)]
+[20:42:04.356] [  540.963610] ---[ end trace 0000000000000000 ]---
+[20:42:04.421] [  541.028825] RIP: 0033:0x798d4898984a
+[20:42:04.422] [  541.029875] RSP: 002b:00007ffc3f4f0538 EFLAGS: 00010206
+[20:42:04.424] [  541.030845] RAX: 0000000000000000 RBX: 000000004d3d9800 RCX: 0000000000001000
+[20:42:04.424] [  541.031894] RDX: 0000798d48680000 RSI: 0000000000000000 RDI: 0000798d48680000
+[20:42:04.425] [  541.032855] RBP: 00007ffc3f4f1290 R08: 0000000000000018 R09: 1000000000001000
+[20:42:04.426] [  541.033803] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[20:42:04.427] [  541.034740] R13: 0000000000001000 R14: 00007ffc3f4f1560 R15: 0000000000000000
+[20:42:04.429] [  541.035658] FS:  0000798d48a847c0(0000) GS:ffff8e7a5f280000(0000) knlGS:0000000000000000
+[20:42:04.430] [  541.036577] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+[20:42:04.431] [  541.037494] CR2: 0000798d48680000 CR3: 00000001230d8005 CR4: 00000000001726f0
+[20:42:04.431] [  541.038419] Kernel panic - not syncing: Fatal exception
+[20:42:04.432] [  541.039443] Kernel Offset: 0x600000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[20:42:05.033] [  541.640734] Rebooting in 20 seconds..
+[20:52:30.935] [  499.412105] printk: legacy console [netcon0] enabled
+[20:52:30.935] [  499.412137] netconsole: network logging started
+[20:52:30.936] [  499.412592] NOBS-TEST 测试开始:仅主驱动
+[20:52:30.954] [  499.431396] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[20:52:31.114] [  499.590316] habanalabs: loading driver, version: 1.24.1-b336d5e
+[20:52:31.114] [  499.590624] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[20:52:31.128] [  499.604055] workqueue: work_for_cpu_fn hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[20:52:31.184] [  499.660245] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[20:52:31.308] [  499.784866] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[20:52:44.404] [  512.880630] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[20:52:47.063] [  515.538986] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[20:52:48.280] [  516.755933] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[20:52:48.335] [  516.810941] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[20:52:48.335] [  516.811286] habanalabs 0000:02:00.0: bad SerDes type 65535
+[20:52:48.335] [  516.811594] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[20:52:52.077] [  520.553608] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[20:52:52.096] [  520.571669] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[20:52:52.097] [  520.572759] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[20:52:52.097] [  520.573048] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[20:52:52.183] [  520.659345] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[20:53:00.292] [  528.767877] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[20:53:00.294] [  528.769751] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[20:53:02.600] [  531.076857] python3.12: Corrupted page table at address 79b1b9767000
+[20:53:02.601] [  531.077185] PGD 80000002bee08067 P4D 80000002bee08067 PUD 67af46067 PMD 32e17f067 PTE 800044bec0d09227
+[20:53:02.601] [  531.077499] Bad pagetable: 000f [#1] PREEMPT SMP PTI
+[20:53:02.602] [  531.077810] CPU: 16 PID: 7546 Comm: python3.12 Tainted: G           OE      6.8.0-136-generic #136-Ubuntu
+[20:53:02.602] [  531.078135] Hardware name: GIGABYTE MU70-SU0-NV-XX/MU70-SU0-NV-XX, BIOS R11 08/19/2020
+[20:53:02.602] [  531.078465] RIP: 0033:0x79b1ba58984a
+[20:53:02.603] [  531.078825] Code: c5 fe 7f 07 c5 fe 7f 47 20 c5 fe 7f 47 40 c5 fe 7f 47 60 c5 f8 77 c3 66 0f 1f 84 00 00 00 00 00 40 0f b6 c6 48 89 d1 48 89 fa <f3> aa 48 89 d0 c5 f8 77 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90
+[20:53:02.603] [  531.079529] RSP: 002b:00007fffd5acd7d8 EFLAGS: 00010206
+[20:53:02.604] [  531.079890] RAX: 0000000000000000 RBX: 00000000417e9800 RCX: 0000000000001000
+[20:53:02.604] [  531.080253] RDX: 000079b1b9767000 RSI: 0000000000000000 RDI: 000079b1b9767000
+[20:53:02.604] [  531.080615] RBP: 00007fffd5ace530 R08: 0000000000000018 R09: 1000000000001000
+[20:53:02.605] [  531.080975] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[20:53:02.605] [  531.081333] R13: 0000000000001000 R14: 00007fffd5ace800 R15: 0000000000000000
+[20:53:02.606] [  531.081689] FS:  000079b1ba6347c0 GS:  0000000000000000
+[20:53:02.608] [  531.082044] Modules linked in: habanalabs_en(OE) habanalabs_ib(OE+) habanalabs_cn(OE) habanalabs(OE) habanalabs_compat(OE) netconsole cmac veth nls_utf8 cifs cifs_arc4 nls_ucs2_utils cifs_md4 netfs nf_conntrack_netlink xt_nat xt_tcpudp xt_conntrack xt_MASQUERADE xfrm_user xfrm_algo xt_set ip_set nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype nft_compat nf_tables vhost_net vhost vhost_iotlb tap vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd qrtr ecc overlay bridge stp llc intel_rapl_msr binfmt_misc intel_rapl_common sb_edac x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel nls_iso8859_1 kvm ipmi_ssif irqbypass ast mei_me rapl i2c_i801 acpi_power_meter mei intel_cstate intel_pch_thermal joydev ipmi_si i2c_smbus lpc_ich acpi_ipmi ipmi_devintf ipmi_msghandler input_leds acpi_pad mac_hid sch_fq_codel ib_uverbs ib_core msr aic8800_fdrv(OE) cfg80211 dm_multipath aic_load_fw(OE) efi_pstore nfnetlink dmi_sysfs ip_tables x_tables autofs4 btrfs blake2b
+[20:53:02.608] _generic raid10 raid456
+[20:53:02.611] [  531.082126]  async_raid6_recov async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 uas usb_storage hid_generic usbhid hid crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha256_ssse3 sha1_ssse3 mpt3sas igb ahci raid_class i2c_algo_bit xhci_pci libahci scsi_transport_sas dca xhci_pci_renesas wmi aesni_intel crypto_simd cryptd [last unloaded: habanalabs_compat(OE)]
+[20:53:02.612] [  531.087102] ---[ end trace 0000000000000000 ]---
+[20:53:02.670] [  531.145989] RIP: 0033:0x79b1ba58984a
+[20:53:02.671] [  531.146411] RSP: 002b:00007fffd5acd7d8 EFLAGS: 00010206
+[20:53:02.671] [  531.146812] RAX: 0000000000000000 RBX: 00000000417e9800 RCX: 0000000000001000
+[20:53:02.672] [  531.147150] RDX: 000079b1b9767000 RSI: 0000000000000000 RDI: 000079b1b9767000
+[20:53:02.672] [  531.147504] RBP: 00007fffd5ace530 R08: 0000000000000018 R09: 1000000000001000
+[20:53:02.672] [  531.147863] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[20:53:02.672] [  531.148207] R13: 0000000000001000 R14: 00007fffd5ace800 R15: 0000000000000000
+[20:53:02.672] [  531.148586] FS:  000079b1ba6347c0(0000) GS:ffff8eb89f400000(0000) knlGS:0000000000000000
+[20:53:02.673] [  531.148928] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+[20:53:02.673] [  531.149222] CR2: 000079b1b9767000 CR3: 000000010ee02002 CR4: 00000000001726f0
+[20:53:02.673] [  531.149535] Kernel panic - not syncing: Fatal exception
+[20:53:02.674] [  531.149965] Kernel Offset: 0x27e00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[20:53:02.731] [  531.207384] Rebooting in 20 seconds..
+[20:57:17.192] [  159.413815] printk: legacy console [netcon0] enabled
+[20:57:17.192] [  159.413866] netconsole: network logging started
+[20:57:17.193] [  159.414484] ISOLATE-TEST 开始:只加载主驱动,黑名单辅助模块
+[20:57:17.197] [  159.418102] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[20:57:17.334] [  159.555676] habanalabs: loading driver, version: 1.24.1-b336d5e
+[20:57:17.334] [  159.555998] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[20:57:17.349] [  159.569681] workqueue: work_for_cpu_fn hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[20:57:17.406] [  159.628418] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[20:57:17.534] [  159.755419] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[20:57:30.641] [  172.862059] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[20:57:33.302] [  175.522870] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[20:57:34.517] [  176.737761] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[20:57:34.571] [  176.792778] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[20:57:34.572] [  176.793331] habanalabs 0000:02:00.0: bad SerDes type 65535
+[20:57:34.573] [  176.793866] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[20:57:38.313] [  180.533616] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[20:57:38.331] [  180.551677] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[20:57:38.332] [  180.552822] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[20:57:38.332] [  180.553134] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[20:57:53.221] [  195.442168] python3.12: Corrupted page table at address 7083506ed000
+[20:57:53.222] [  195.442757] PGD 800000010f00d067 P4D 800000010f00d067 PUD 10f00e067 PMD 362e11067 PTE 800046ed80961227
+[20:57:53.222] [  195.443332] Bad pagetable: 000f [#1] PREEMPT SMP PTI
+[20:57:53.222] [  195.443904] CPU: 32 PID: 5363 Comm: python3.12 Tainted: G           OE      6.8.0-136-generic #136-Ubuntu
+[20:57:53.224] [  195.444503] Hardware name: GIGABYTE MU70-SU0-NV-XX/MU70-SU0-NV-XX, BIOS R11 08/19/2020
+[20:57:53.225] [  195.445113] RIP: 0033:0x708350d8984a
+[20:57:53.226] [  195.445758] Code: c5 fe 7f 07 c5 fe 7f 47 20 c5 fe 7f 47 40 c5 fe 7f 47 60 c5 f8 77 c3 66 0f 1f 84 00 00 00 00 00 40 0f b6 c6 48 89 d1 48 89 fa <f3> aa 48 89 d0 c5 f8 77 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90
+[20:57:53.227] [  195.447082] RSP: 002b:00007ffc77947238 EFLAGS: 00010206
+[20:57:53.227] [  195.447773] RAX: 0000000000000000 RBX: 0000000049105800 RCX: 0000000000001000
+[20:57:53.228] [  195.448478] RDX: 00007083506ed000 RSI: 0000000000000000 RDI: 00007083506ed000
+[20:57:53.229] [  195.449191] RBP: 00007ffc77947f90 R08: 0000000000000018 R09: 1000000000001000
+[20:57:53.229] [  195.449913] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[20:57:53.230] [  195.450640] R13: 0000000000001000 R14: 00007ffc77948260 R15: 0000000000000000
+[20:57:53.231] [  195.451361] FS:  0000708350f217c0 GS:  0000000000000000
+[20:57:53.238] [  195.452077] Modules linked in: habanalabs(OE) habanalabs_compat(OE) netconsole veth nls_utf8 cifs cifs_arc4 nls_ucs2_utils cifs_md4 netfs nf_conntrack_netlink xt_nat xt_tcpudp xt_conntrack xt_MASQUERADE xfrm_user xfrm_algo xt_set ip_set nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype nft_compat nf_tables vhost_net vhost vhost_iotlb tap vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd qrtr ecc overlay bridge stp llc intel_rapl_msr intel_rapl_common sb_edac binfmt_misc x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel nls_iso8859_1 kvm ipmi_ssif irqbypass ast mei_me rapl i2c_i801 acpi_power_meter mei intel_cstate intel_pch_thermal joydev ipmi_si i2c_smbus lpc_ich acpi_ipmi ipmi_devintf ipmi_msghandler input_leds acpi_pad mac_hid sch_fq_codel ib_uverbs ib_core msr aic8800_fdrv(OE) cfg80211 dm_multipath aic_load_fw(OE) efi_pstore nfnetlink dmi_sysfs ip_tables x_tables autofs4 btrfs blake2b_generic raid10 raid456 async_raid6_recov async_memcpy async
+[20:57:53.238] _pq async_xor async_tx xor raid6_pq
+[20:57:53.241] [  195.452234]  libcrc32c raid1 raid0 hid_generic usbhid uas hid usb_storage crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic ghash_clmulni_intel sha256_ssse3 sha1_ssse3 igb mpt3sas ahci i2c_algo_bit libahci xhci_pci raid_class xhci_pci_renesas dca scsi_transport_sas wmi aesni_intel crypto_simd cryptd [last unloaded: habanalabs_compat(OE)]
+[20:57:53.241] [  195.462011] ---[ end trace 0000000000000000 ]---
+[20:57:53.307] [  195.527573] RIP: 0033:0x708350d8984a
+[20:57:53.308] [  195.528557] RSP: 002b:00007ffc77947238 EFLAGS: 00010206
+[20:57:53.309] [  195.529516] RAX: 0000000000000000 RBX: 0000000049105800 RCX: 0000000000001000
+[20:57:53.309] [  195.530475] RDX: 00007083506ed000 RSI: 0000000000000000 RDI: 00007083506ed000
+[20:57:53.311] [  195.531431] RBP: 00007ffc77947f90 R08: 0000000000000018 R09: 1000000000001000
+[20:57:53.312] [  195.532389] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[20:57:53.313] [  195.533335] R13: 0000000000001000 R14: 00007ffc77948260 R15: 0000000000000000
+[20:57:53.314] [  195.534269] FS:  0000708350f217c0(0000) GS:ffff8ec69fc00000(0000) knlGS:0000000000000000
+[20:57:53.315] [  195.535202] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+[20:57:53.315] [  195.536117] CR2: 00007083506ed000 CR3: 0000000347ddc005 CR4: 00000000001726f0
+[20:57:53.316] [  195.537035] Kernel panic - not syncing: Fatal exception
+[20:57:53.317] [  195.538028] Kernel Offset: 0xe400000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[20:57:53.923] [  196.144007] Rebooting in 20 seconds..
+[21:11:11.708] [  702.655201] printk: legacy console [netcon0] enabled
+[21:11:11.708] [  702.655227] netconsole: network logging started
+[21:11:11.724] [  702.671202] NICSKIP-TEST 开始:补丁④ 已跳过 NIC 初始化
+[21:11:11.726] [  702.673685] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[21:11:11.770] [  702.717697] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[21:11:11.776] [  702.722414] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[21:11:11.814] [  702.761249] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[21:11:11.943] [  702.890853] habanalabs: loading driver, version: 1.24.1-b336d5e
+[21:11:11.944] [  702.891503] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[21:11:11.960] [  702.906112] workqueue: work_for_cpu_fn hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[21:11:12.014] [  702.961312] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[21:11:12.143] [  703.090312] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[21:11:25.245] [  716.192350] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[21:11:27.905] [  718.852201] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[21:11:29.122] [  720.069201] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[21:11:29.161] [  720.108202] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[21:11:29.161] [  720.108262] habanalabs 0000:02:00.0: bad SerDes type 65535
+[21:11:29.161] [  720.108289] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[21:11:32.890] [  723.836326] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[21:11:32.891] [  723.836990] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[21:11:32.909] [  723.855202] habanalabs 0000:02:00.0: PATCHED-NIC-SKIP: skipping NIC init entirely
+[21:11:32.909] [  723.855577] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[21:11:32.910] [  723.855821] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[21:11:45.048] [  735.994430] python3.12: Corrupted page table at address 7acf2977e000
+[21:11:45.048] [  735.994868] PGD 8000000650bf5067 P4D 8000000650bf5067 PUD 11a77f067 PMD 662b77067 PTE 800041c1806f7227
+[21:11:45.048] [  735.995264] Bad pagetable: 000f [#1] PREEMPT SMP PTI
+[21:11:45.050] [  735.995656] CPU: 13 PID: 11538 Comm: python3.12 Tainted: G           OE      6.8.0-136-generic #136-Ubuntu
+[21:11:45.050] [  735.996062] Hardware name: GIGABYTE MU70-SU0-NV-XX/MU70-SU0-NV-XX, BIOS R11 08/19/2020
+[21:11:45.050] [  735.996476] RIP: 0033:0x7acf2a58984a
+[21:11:45.051] [  735.996913] Code: c5 fe 7f 07 c5 fe 7f 47 20 c5 fe 7f 47 40 c5 fe 7f 47 60 c5 f8 77 c3 66 0f 1f 84 00 00 00 00 00 40 0f b6 c6 48 89 d1 48 89 fa <f3> aa 48 89 d0 c5 f8 77 c3 66 66 2e 0f 1f 84 00 00 00 00 00 66 90
+[21:11:45.051] [  735.997776] RSP: 002b:00007fff266343b8 EFLAGS: 00010206
+[21:11:45.052] [  735.998216] RAX: 0000000000000000 RBX: 000000002f813800 RCX: 0000000000001000
+[21:11:45.052] [  735.998661] RDX: 00007acf2977e000 RSI: 0000000000000000 RDI: 00007acf2977e000
+[21:11:45.053] [  735.999103] RBP: 00007fff26635110 R08: 0000000000000018 R09: 1000000000001000
+[21:11:45.053] [  735.999543] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[21:11:45.054] [  735.999983] R13: 0000000000001000 R14: 00007fff266353e0 R15: 0000000000000000
+[21:11:45.054] [  736.000415] FS:  00007acf2a6187c0 GS:  0000000000000000
+[21:11:45.059] [  736.000854] Modules linked in: habanalabs(OE) habanalabs_ib(OE) ib_uverbs ib_core habanalabs_en(OE) habanalabs_cn(OE) habanalabs_compat(OE) netconsole tls veth nls_utf8 cifs cifs_arc4 nls_ucs2_utils cifs_md4 netfs nf_conntrack_netlink xt_nat xt_tcpudp xt_conntrack xt_MASQUERADE xfrm_user xfrm_algo xt_set ip_set nft_chain_nat nf_nat nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 xt_addrtype nft_compat nf_tables vhost_net vhost vhost_iotlb tap vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd qrtr ecc overlay intel_rapl_msr bridge intel_rapl_common sb_edac stp llc x86_pkg_temp_thermal intel_powerclamp coretemp kvm_intel kvm ipmi_ssif irqbypass binfmt_misc ast rapl mei_me i2c_i801 acpi_power_meter intel_cstate intel_pch_thermal mei i2c_smbus joydev ipmi_si lpc_ich acpi_ipmi ipmi_devintf ipmi_msghandler input_leds acpi_pad mac_hid sch_fq_codel dm_multipath msr aic8800_fdrv(OE) cfg80211 aic_load_fw(OE) efi_pstore nfnetlink dmi_sysfs ip_tables x_tables autofs4 btrfs blake2b_generic raid10
+[21:11:45.059] raid456 async_raid6_recov
+[21:11:45.061] [  736.000960]  async_memcpy async_pq async_xor async_tx xor raid6_pq libcrc32c raid1 raid0 hid_generic usbhid uas hid usb_storage crct10dif_pclmul crc32_pclmul polyval_clmulni polyval_generic mpt3sas igb ghash_clmulni_intel sha256_ssse3 sha1_ssse3 ahci i2c_algo_bit raid_class xhci_pci libahci scsi_transport_sas dca xhci_pci_renesas wmi aesni_intel crypto_simd cryptd [last unloaded: habanalabs_compat(OE)]
+[21:11:45.062] [  736.007731] ---[ end trace 0000000000000000 ]---
+[21:11:45.124] [  736.070290] RIP: 0033:0x7acf2a58984a
+[21:11:45.125] [  736.070918] RSP: 002b:00007fff266343b8 EFLAGS: 00010206
+[21:11:45.126] [  736.071525] RAX: 0000000000000000 RBX: 000000002f813800 RCX: 0000000000001000
+[21:11:45.126] [  736.072135] RDX: 00007acf2977e000 RSI: 0000000000000000 RDI: 00007acf2977e000
+[21:11:45.127] [  736.072733] RBP: 00007fff26635110 R08: 0000000000000018 R09: 1000000000001000
+[21:11:45.127] [  736.073328] R10: 0000000000001000 R11: 0000000000000203 R12: 0000000000000000
+[21:11:45.127] [  736.073917] R13: 0000000000001000 R14: 00007fff266353e0 R15: 0000000000000000
+[21:11:45.128] [  736.074492] FS:  00007acf2a6187c0(0000) GS:ffff89f69f280000(0000) knlGS:0000000000000000
+[21:11:45.129] [  736.075068] CS:  0033 DS: 0000 ES: 0000 CR0: 0000000080050033
+[21:11:45.130] [  736.075645] CR2: 00007acf2977e000 CR3: 0000000110c4c002 CR4: 00000000001726f0
+[21:11:45.130] [  736.076225] Kernel panic - not syncing: Fatal exception
+[21:11:45.131] [  736.076923] Kernel Offset: 0x3000000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
+[21:11:45.193] [  736.138708] Rebooting in 20 seconds..
+[21:24:33.836] [  237.996198] printk: legacy console [netcon0] enabled
+[21:24:33.836] [  237.996220] netconsole: network logging started
+[21:24:33.852] [  238.012068] NICSKIP-TEST 开始:补丁④ 已跳过 NIC 初始化
+[21:24:33.855] [  238.015204] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[21:24:33.907] [  238.066729] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[21:24:33.912] [  238.071625] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[21:24:33.918] [  238.078062] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[21:24:34.053] [  238.213973] habanalabs: loading driver, version: 1.24.1-b336d5e
+[21:24:34.054] [  238.214690] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[21:24:34.069] [  238.228091] workqueue: work_for_cpu_fn hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[21:24:34.085] [  238.245154] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[21:24:34.216] [  238.374848] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[21:24:47.342] [  251.501985] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[21:24:50.028] [  254.187588] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[21:24:51.242] [  255.401175] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[21:24:51.296] [  255.456118] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[21:24:51.296] [  255.456740] habanalabs 0000:02:00.0: bad SerDes type 65535
+[21:24:51.298] [  255.457275] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[21:24:55.032] [  259.192442] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[21:24:55.051] [  259.210443] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[21:24:55.052] [  259.211439] habanalabs 0000:02:00.0: PATCHED-NIC-SKIP: skipping NIC init entirely
+[21:24:55.053] [  259.211912] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[21:24:55.053] [  259.212229] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[21:25:04.932] [  269.091603] habanalabs 0000:02:00.0: Map failed for va 0xfff0000100000000 to pa 0xfd000000
+[21:25:04.933] [  269.092018] habanalabs 0000:02:00.0: ctx_init failed
+[21:25:04.934] [  269.093405] habanalabs 0000:02:00.0: Failed to create context -22
+[21:26:42.268] [  366.425690] nvidia-nvlink: Nvlink Core is being initialized, major device number 509
+[21:26:42.290] [  366.425963] NVRM: No NVIDIA GPU found.
+[21:26:42.292] [  366.450441] nvidia-nvlink: Unregistered Nvlink Core, major device number 509
+[21:26:42.528] [  366.685718] nvidia-nvlink: Nvlink Core is being initialized, major device number 509
+[21:26:42.549] [  366.686126] NVRM: No NVIDIA GPU found.
+[21:26:42.552] [  366.709558] nvidia-nvlink: Unregistered Nvlink Core, major device number 509
+[21:28:08.562] [  452.719084] habanalabs_ib: driver removed
+[21:28:08.590] [  452.746789] habanalabs_en: driver removed
+[21:28:08.619] [  452.775429] habanalabs_cn: driver removed
+[21:28:08.646] [  452.803091] habanalabs 0000:02:00.0: Removing device 0000:02:00.0
+[21:28:08.665] [  452.821856] habanalabs 0000:02:00.0: Waiting for all processes to exit (timeout of 600 seconds)
+[21:28:19.771] [  463.927387] habanalabs: removed device successfully
+[21:28:19.799] [  463.955698] habanalabs_compat: module removed
+[21:28:52.384] [  496.540311] IOMMU-PT-TEST 开始:域=identity + HR 页表
+[21:28:52.408] [  496.563862] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[21:28:52.452] [  496.607811] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[21:28:52.469] [  496.625522] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[21:28:52.476] [  496.632579] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[21:28:52.582] [  496.738108] habanalabs: loading driver, version: 1.24.1-b336d5e
+[21:28:52.586] [  496.741531] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[21:28:52.678] [  496.833759] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[21:28:52.820] [  496.974713] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[21:29:05.929] [  510.084544] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[21:29:08.604] [  512.760194] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[21:29:09.823] [  513.979205] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[21:29:09.878] [  514.034171] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[21:29:09.879] [  514.034881] habanalabs 0000:02:00.0: bad SerDes type 65535
+[21:29:09.879] [  514.035567] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[21:29:13.615] [  517.771182] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[21:29:13.633] [  517.789254] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[21:29:13.634] [  517.790395] habanalabs 0000:02:00.0: PATCHED-NIC-SKIP: skipping NIC init entirely
+[21:29:13.639] [  517.790945] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[21:29:13.639] [  517.791331] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[21:29:52.203] [  556.358624] habanalabs_ib: driver removed
+[21:29:52.232] [  556.387704] habanalabs_en: driver removed
+[21:29:52.262] [  556.417442] habanalabs_cn: driver removed
+[21:29:52.293] [  556.448637] habanalabs 0000:02:00.0: Removing device 0000:02:00.0
+[21:29:52.311] [  556.466901] habanalabs 0000:02:00.0: Waiting for all processes to exit (timeout of 600 seconds)
+[21:30:03.415] [  567.570423] habanalabs: removed device successfully
+[21:30:03.448] [  567.603703] habanalabs_compat: module removed
+[21:30:03.471] [  567.626792] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[21:30:03.516] [  567.671359] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[21:30:03.526] [  567.680490] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[21:30:03.534] [  567.689347] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[21:30:03.688] [  567.843552] habanalabs: loading driver, version: 1.24.1-b336d5e
+[21:30:03.690] [  567.844142] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[21:30:03.785] [  567.940576] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[21:30:03.929] [  568.084380] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[21:30:17.056] [  581.210402] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[21:30:19.738] [  583.892946] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[21:30:20.951] [  585.105204] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[21:30:21.005] [  585.160127] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[21:30:21.005] [  585.160801] habanalabs 0000:02:00.0: bad SerDes type 65535
+[21:30:21.007] [  585.161432] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[21:30:24.745] [  588.899813] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[21:30:24.763] [  588.917970] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[21:30:35.436] [  599.590594] habanalabs 0000:02:00.0 hbl_0: IB device registered
+[21:30:35.455] [  599.609699] habanalabs 0000:02:00.0: hwmon2: add sensors information
+[21:30:35.455] [  599.610351] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[21:30:46.846] [  611.001211] habanalabs 0000:02:00.0: Card 7 Port 17: link down
+[21:30:46.847] [  611.001817] habanalabs 0000:02:00.0: Card 7 Port 17: link up
+[21:30:47.208] [  611.363760] habanalabs 0000:02:00.0: Card 7 Port 17: link down
+[21:30:47.210] [  611.364705] habanalabs 0000:02:00.0: Card 7 Port 17: link up
+[21:30:47.269] [  611.424037] habanalabs 0000:02:00.0: Card 7 Port 17: link down
+[21:30:47.270] [  611.424936] habanalabs 0000:02:00.0: Card 7 Port 17: link up
+[21:30:47.365] [  611.519670] habanalabs 0000:02:00.0: Card 7 Port 17: link down
+[21:30:47.366] [  611.520623] habanalabs 0000:02:00.0: Card 7 Port 17: link up
+[21:30:48.533] [  612.687726] habanalabs 0000:02:00.0: Card 7 Port 17: link down
+[21:30:48.534] [  612.688913] habanalabs 0000:02:00.0: Card 7 Port 17: link up
+[21:31:42.269] [  666.423452] nvidia-nvlink: Nvlink Core is being initialized, major device number 509
+[21:31:42.282] [  666.424300] NVRM: No NVIDIA GPU found.
+[21:31:42.285] [  666.438574] nvidia-nvlink: Unregistered Nvlink Core, major device number 509
+[21:31:42.505] [  666.659038] nvidia-nvlink: Nvlink Core is being initialized, major device number 509
+[21:31:42.527] [  666.659397] NVRM: No NVIDIA GPU found.
+[21:31:42.543] [  666.693338] nvidia-nvlink: Unregistered Nvlink Core, major device number 509
+[21:36:04.692] [  928.841132] workqueue: drm_fb_helper_damage_work hogged CPU for >10000us 256 times, consider switching to WQ_UNBOUND
+[21:36:04.932] [  929.082965] br0: port 5(enp4s0) entered disabled state
+[21:36:05.010] [  929.160076] br-8c965915cb5c: port 1(vethf5a7940) entered disabled state
+[21:36:05.010] [  929.160571] veth2d008a1: renamed from eth0
+[21:36:05.068] [  929.218134] br-e8bbe37469bd: port 1(vethcb3cb5d) entered disabled state
+[21:36:05.068] [  929.218702] vetheb0ba26: renamed from eth0
+[21:36:05.092] [  929.242603] br-619f00e6d7db: port 1(vethd9a1b2e) entered disabled state
+[21:36:05.092] [  929.243222] vethf7659b7: renamed from eth0
+[21:36:05.117] [  929.267450] br-8c965915cb5c: port 1(vethf5a7940) entered disabled state
+[21:36:05.128] [  929.278515] vethf5a7940 (unregistering): left allmulticast mode
+[21:36:05.128] [  929.278578] vethf5a7940 (unregistering): left promiscuous mode
+[21:36:05.128] [  929.278607] br-8c965915cb5c: port 1(vethf5a7940) entered disabled state
+[21:36:05.168] [  929.318595] br-e8bbe37469bd: port 1(vethcb3cb5d) entered disabled state
+[21:36:05.170] [  929.320013] vethcb3cb5d (unregistering): left allmulticast mode
+[21:36:05.170] [  929.320038] vethcb3cb5d (unregistering): left promiscuous mode
+[21:36:05.170] [  929.320052] br-e8bbe37469bd: port 1(vethcb3cb5d) entered disabled state
+[21:36:05.206] [  929.356236] br-619f00e6d7db: port 1(vethd9a1b2e) entered disabled state
+[21:36:05.208] [  929.358074] vethd9a1b2e (unregistering): left allmulticast mode
+[21:36:05.208] [  929.358867] vethd9a1b2e (unregistering): left promiscuous mode
+[21:36:05.210] [  929.359619] br-619f00e6d7db: port 1(vethd9a1b2e) entered disabled state
+[21:36:05.843] [  929.991493] br-bebd1b15fdba: port 1(vethc1e232e) entered disabled state
+[21:36:05.844] [  929.993101] vethd147b5c: renamed from eth0
+[21:36:05.895] [  930.045650] br-bebd1b15fdba: port 1(vethc1e232e) entered disabled state
+[21:36:05.915] [  930.064936] vethc1e232e (unregistering): left allmulticast mode
+[21:36:05.915] [  930.065362] vethc1e232e (unregistering): left promiscuous mode
+[21:36:05.916] [  930.065744] br-bebd1b15fdba: port 1(vethc1e232e) entered disabled state
+[21:36:07.022] [  931.171897] br-206b8f270a29: port 1(vethc329f3c) entered disabled state
+[21:36:07.025] [  931.175582] vethe993c53: renamed from eth0
+[21:36:07.094] [  931.243899] br-206b8f270a29: port 1(vethc329f3c) entered disabled state
+[21:36:07.114] [  931.263450] vethc329f3c (unregistering): left allmulticast mode
+[21:36:07.114] [  931.264245] vethc329f3c (unregistering): left promiscuous mode
+[21:36:07.115] [  931.265019] br-206b8f270a29: port 1(vethc329f3c) entered disabled state
+[21:36:09.197] [  933.346513] br0: port 4(vnet0) entered disabled state
+[21:36:09.216] [  933.366172] vnet0 (unregistering): left allmulticast mode
+[21:36:09.218] [  933.367016] vnet0 (unregistering): left promiscuous mode
+[21:36:09.218] [  933.367829] br0: port 4(vnet0) entered disabled state
+[21:36:09.752] [  933.902057] kauditd_printk_skb: 1 callbacks suppressed
+[21:36:09.754] [  933.902060] audit: type=1400 audit(1791553047.693:147): apparmor="STATUS" operation="profile_remove" profile="unconfined" name="libvirt-7ad21f23-eeb2-4630-8be6-74a0d77b5abf" pid=21869 comm="apparmor_parser"
+[21:36:09.809] [  933.958876] mpt3sas 0000:01:00.0: can't disable ASPM; OS doesn't have ASPM control
+[21:36:09.827] [  933.977502] mpt2sas_cm1: 64 BIT PCI BUS DMA ADDRESSING SUPPORTED, total mem (32725164 kB)
+[21:36:09.900] [  934.050513] mpt2sas_cm1: CurrentHostPageSize is 0: Setting default host page size to 4k
+[21:36:09.902] [  934.051337] mpt2sas_cm1: MSI-X vectors supported: 16
+[21:36:09.902] [  934.052043] 	 no of cores: 36, max_msix_vectors: -1
+[21:36:09.903] [  934.052758] mpt2sas_cm1:  0 16 16
+[21:36:09.904] [  934.054129] mpt2sas_cm1: High IOPs queues : disabled
+[21:36:09.905] [  934.054844] mpt2sas1-msix0: PCI-MSI-X enabled: IRQ 55
+[21:36:09.905] [  934.055548] mpt2sas1-msix1: PCI-MSI-X enabled: IRQ 56
+[21:36:09.905] [  934.056241] mpt2sas1-msix2: PCI-MSI-X enabled: IRQ 57
+[21:36:09.907] [  934.056902] mpt2sas1-msix3: PCI-MSI-X enabled: IRQ 58
+[21:36:09.908] [  934.057553] mpt2sas1-msix4: PCI-MSI-X enabled: IRQ 192
+[21:36:09.908] [  934.058175] mpt2sas1-msix5: PCI-MSI-X enabled: IRQ 193
+[21:36:09.909] [  934.058775] mpt2sas1-msix6: PCI-MSI-X enabled: IRQ 194
+[21:36:09.909] [  934.059337] mpt2sas1-msix7: PCI-MSI-X enabled: IRQ 195
+[21:36:09.910] [  934.059877] mpt2sas1-msix8: PCI-MSI-X enabled: IRQ 196
+[21:36:09.910] [  934.060421] mpt2sas1-msix9: PCI-MSI-X enabled: IRQ 197
+[21:36:09.910] [  934.060950] mpt2sas1-msix10: PCI-MSI-X enabled: IRQ 198
+[21:36:09.911] [  934.061484] mpt2sas1-msix11: PCI-MSI-X enabled: IRQ 199
+[21:36:09.911] [  934.061979] mpt2sas1-msix12: PCI-MSI-X enabled: IRQ 200
+[21:36:09.912] [  934.062466] mpt2sas1-msix13: PCI-MSI-X enabled: IRQ 201
+[21:36:09.912] [  934.062924] mpt2sas1-msix14: PCI-MSI-X enabled: IRQ 202
+[21:36:09.930] [  934.080578] mpt2sas1-msix15: PCI-MSI-X enabled: IRQ 203
+[21:36:09.931] [  934.080916] mpt2sas_cm1: iomem(0x00000000fb240000), mapped(0x00000000c0f92ce3), size(65536)
+[21:36:09.931] [  934.081254] mpt2sas_cm1: ioport(0x000000000000e000), size(256)
+[21:36:10.004] [  934.154174] mpt2sas_cm1: CurrentHostPageSize is 0: Setting default host page size to 4k
+[21:36:10.049] [  934.199295] mpt2sas_cm1: scatter gather: sge_in_main_msg(1), sge_per_chain(9), sge_per_io(128), chains_per_io(15)
+[21:36:10.050] [  934.200930] mpt2sas_cm1: request pool(0x000000001cdafa21) - dma(0xffa00000): depth(10368), frame_size(128), pool_size(1296 kB)
+[21:36:10.086] [  934.235622] mpt2sas_cm1: sense pool(0x000000004acb1bdf) - dma(0xfe500000): depth(10107), element_size(96), pool_size (947 kB)
+[21:36:10.103] [  934.253476] mpt2sas_cm1: reply pool(0x0000000022a0e0be) - dma(0xfe200000): depth(10432), frame_size(128), pool_size(1304 kB)
+[21:36:10.104] [  934.253904] mpt2sas_cm1: config page(0x0000000053ace19b) - dma(0xfe02f000): size(512)
+[21:36:10.104] [  934.254255] mpt2sas_cm1: Allocated physical memory: size(25141 kB)
+[21:36:10.105] [  934.254593] mpt2sas_cm1: Current Controller Queue Depth(10104),Max Controller Queue Depth(10240)
+[21:36:10.105] [  934.254935] mpt2sas_cm1: Scatter Gather Elements per IO(128)
+[21:36:10.167] [  934.317560] mpt2sas_cm1: LSISAS2308: FWVersion(20.00.07.00), ChipRevision(0x05)
+[21:36:10.168] [  934.318081] mpt2sas_cm1: Protocol=(Initiator,Target), Capabilities=(TLR,EEDP,Snapshot Buffer,Diag Trace Buffer,Task Set Full,NCQ)
+[21:36:10.185] [  934.336297] scsi host6: Fusion MPT SAS Host
+[21:36:10.206] [  934.355955] mpt2sas_cm1: sending port enable !!
+[21:36:10.208] [  934.358023] mpt2sas_cm1: hba_port entry: 0000000053b17a18, port: 255 is added to hba_port list
+[21:36:10.214] [  934.363148] mpt2sas_cm1: host_add: handle(0x0001), sas_addr(0x500605b00657c1a0), phys(8)
+[21:36:10.216] [  934.365867] mpt2sas_cm1: handle(0x9) sas_address(0x5000cca058a0c571) port_type(0x1)
+[21:36:10.217] [  934.367465] mpt2sas_cm1: handle(0xa) sas_address(0x5000cca058a10b89) port_type(0x1)
+[21:36:10.219] [  934.368891] mpt2sas_cm1: handle(0xb) sas_address(0x5000cca058a09a9d) port_type(0x1)
+[21:36:10.220] [  934.370276] mpt2sas_cm1: handle(0xc) sas_address(0x5000cca0589dd109) port_type(0x1)
+[21:36:10.221] [  934.371672] mpt2sas_cm1: handle(0xd) sas_address(0x5000cca058a0dd19) port_type(0x1)
+[21:36:10.222] [  934.372993] mpt2sas_cm1: handle(0xe) sas_address(0x5000cca0589e8969) port_type(0x1)
+[21:36:10.232] [  934.381196] mpt2sas_cm1: port enable: SUCCESS
+[21:36:10.235] [  934.384357] scsi 6:0:0:0: Direct-Access     HGST     HUS724030ALS640  A1CD PQ: 0 ANSI: 6
+[21:36:10.236] [  934.385353] scsi 6:0:0:0: SSP: handle(0x000d), sas_addr(0x5000cca058a0dd19), phy(6), device_name(0x5000cca058a0dd1b)
+[21:36:10.237] [  934.386327] scsi 6:0:0:0: enclosure logical id (0x500605b00657c1a0), slot(5)
+[21:36:10.238] [  934.387261] scsi 6:0:0:0: qdepth(254), tagged(1), scsi_level(7), cmd_que(1)
+[21:36:10.241] [  934.391109]  end_device-6:0: add: handle(0x000d), sas_addr(0x5000cca058a0dd19)
+[21:36:10.243] [  934.392912] scsi 6:0:1:0: Direct-Access     HGST     HUS724030ALS640  A1CD PQ: 0 ANSI: 6
+[21:36:10.244] [  934.393273] scsi 6:0:1:0: SSP: handle(0x0009), sas_addr(0x5000cca058a0c571), phy(2), device_name(0x5000cca058a0c573)
+[21:36:10.244] [  934.393737] scsi 6:0:1:0: enclosure logical id (0x500605b00657c1a0), slot(1)
+[21:36:10.245] [  934.394315] scsi 6:0:1:0: qdepth(254), tagged(1), scsi_level(7), cmd_que(1)
+[21:36:10.249] [  934.398757]  end_device-6:1: add: handle(0x0009), sas_addr(0x5000cca058a0c571)
+[21:36:10.251] [  934.400826] scsi 6:0:2:0: Direct-Access     HGST     HUS724030ALS640  A1CD PQ: 0 ANSI: 6
+[21:36:10.252] [  934.401459] scsi 6:0:2:0: SSP: handle(0x000a), sas_addr(0x5000cca058a10b89), phy(3), device_name(0x5000cca058a10b8b)
+[21:36:10.252] [  934.402134] scsi 6:0:2:0: enclosure logical id (0x500605b00657c1a0), slot(0)
+[21:36:10.253] [  934.402784] scsi 6:0:2:0: qdepth(254), tagged(1), scsi_level(7), cmd_que(1)
+[21:36:10.258] [  934.407626]  end_device-6:2: add: handle(0x000a), sas_addr(0x5000cca058a10b89)
+[21:36:10.260] [  934.409584] scsi 6:0:3:0: Direct-Access     HGST     HUS724030ALS640  A1CD PQ: 0 ANSI: 6
+[21:36:10.261] [  934.410592] scsi 6:0:3:0: SSP: handle(0x000b), sas_addr(0x5000cca058a09a9d), phy(4), device_name(0x5000cca058a09a9f)
+[21:36:10.262] [  934.411594] scsi 6:0:3:0: enclosure logical id (0x500605b00657c1a0), slot(7)
+[21:36:10.263] [  934.412864] scsi 6:0:3:0: qdepth(254), tagged(1), scsi_level(7), cmd_que(1)
+[21:36:10.268] [  934.418141]  end_device-6:3: add: handle(0x000b), sas_addr(0x5000cca058a09a9d)
+[21:36:10.271] [  934.420227] scsi 6:0:4:0: Direct-Access     HGST     HUS724030ALS640  A1CD PQ: 0 ANSI: 6
+[21:36:10.273] [  934.421591] scsi 6:0:4:0: SSP: handle(0x000c), sas_addr(0x5000cca0589dd109), phy(5), device_name(0x5000cca0589dd10b)
+[21:36:10.274] [  934.422923] scsi 6:0:4:0: enclosure logical id (0x500605b00657c1a0), slot(6)
+[21:36:10.275] [  934.424321] scsi 6:0:4:0: qdepth(254), tagged(1), scsi_level(7), cmd_que(1)
+[21:36:10.278] [  934.428555]  end_device-6:4: add: handle(0x000c), sas_addr(0x5000cca0589dd109)
+[21:36:10.281] [  934.430724] scsi 6:0:5:0: Direct-Access     HGST     HUS724030ALS640  A1CD PQ: 0 ANSI: 6
+[21:36:10.283] [  934.432164] scsi 6:0:5:0: SSP: handle(0x000e), sas_addr(0x5000cca0589e8969), phy(7), device_name(0x5000cca0589e896b)
+[21:36:10.284] [  934.433495] scsi 6:0:5:0: enclosure logical id (0x500605b00657c1a0), slot(4)
+[21:36:10.286] [  934.434789] scsi 6:0:5:0: qdepth(254), tagged(1), scsi_level(7), cmd_que(1)
+[21:36:10.289] [  934.439079]  end_device-6:5: add: handle(0x000e), sas_addr(0x5000cca0589e8969)
+[21:36:10.307] [  934.440374] sd 6:0:0:0: Attached scsi generic sg0 type 0
+[21:36:10.309] [  934.440792] sd 6:0:0:0: [sda] 5860533168 512-byte logical blocks: (3.00 TB/2.73 TiB)
+[21:36:10.311] [  934.441581] sd 6:0:1:0: Attached scsi generic sg1 type 0
+[21:36:10.313] [  934.442061] sd 6:0:1:0: [sdb] 5860533168 512-byte logical blocks: (3.00 TB/2.73 TiB)
+[21:36:10.315] [  934.442362] sd 6:0:0:0: [sda] Write Protect is off
+[21:36:10.317] [  934.442365] sd 6:0:0:0: [sda] Mode Sense: f7 00 10 08
+[21:36:10.317] [  934.443280] sd 6:0:0:0: [sda] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[21:36:10.319] [  934.443396] sd 6:0:2:0: Attached scsi generic sg2 type 0
+[21:36:10.319] [  934.443910] sd 6:0:1:0: [sdb] Write Protect is off
+[21:36:10.322] [  934.443914] sd 6:0:1:0: [sdb] Mode Sense: f7 00 10 08
+[21:36:10.323] [  934.443918] sd 6:0:2:0: [sdc] 5860533168 512-byte logical blocks: (3.00 TB/2.73 TiB)
+[21:36:10.324] [  934.444470] sd 6:0:2:0: [sdc] Write Protect is off
+[21:36:10.325] [  934.444485] sd 6:0:2:0: [sdc] Mode Sense: f7 00 10 08
+[21:36:10.327] [  934.444831] sd 6:0:1:0: [sdb] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[21:36:10.327] [  934.445447] sd 6:0:2:0: [sdc] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[21:36:10.327] [  934.445808] sd 6:0:3:0: Attached scsi generic sg3 type 0
+[21:36:10.327] [  934.446347] sd 6:0:3:0: [sdd] 5860533168 512-byte logical blocks: (3.00 TB/2.73 TiB)
+[21:36:10.327] [  934.447124] sd 6:0:4:0: Attached scsi generic sg4 type 0
+[21:36:10.327] [  934.447601] sd 6:0:4:0: [sde] 5860533168 512-byte logical blocks: (3.00 TB/2.73 TiB)
+[21:36:10.327] [  934.448149] sd 6:0:3:0: [sdd] Write Protect is off
+[21:36:10.327] [  934.448163] sd 6:0:3:0: [sdd] Mode Sense: f7 00 10 08
+[21:36:10.327] [  934.449071] sd 6:0:3:0: [sdd] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[21:36:10.327] [  934.450071] sd 6:0:5:0: Attached scsi generic sg5 type 0
+[21:36:10.327] [  934.450831] sd 6:0:5:0: [sdf] 5860533168 512-byte logical blocks: (3.00 TB/2.73 TiB)
+[21:36:10.327] [  934.451081] sd 6:0:4:0: [sde] Write Protect is off
+[21:36:10.327] [  934.451097] sd 6:0:4:0: [sde] Mode Sense: f7 00 10 08
+[21:36:10.327] [  934.452023] sd 6:0:4:0: [sde] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[21:36:10.327] [  934.453076] sd 6:0:5:0: [sdf] Write Protect is off
+[21:36:10.328] [  934.477495] sd 6:0:5:0: [sdf] Mode Sense: f7 00 10 08
+[21:36:10.330] [  934.479688] sd 6:0:5:0: [sdf] Write cache: enabled, read cache: enabled, supports DPO and FUA
+[21:36:10.349] [  934.499293]  sda: sda1
+[21:36:10.350] [  934.500354] sd 6:0:0:0: [sda] Attached SCSI disk
+[21:36:10.359] [  934.504488]  sdb: sdb1
+[21:36:10.359] [  934.504529]  sdc: sdc1
+[21:36:10.359] [  934.505590]  sdd: sdd1
+[21:36:10.359] [  934.505723] sd 6:0:1:0: [sdb] Attached SCSI disk
+[21:36:10.359] [  934.507273] sd 6:0:2:0: [sdc] Attached SCSI disk
+[21:36:10.359] [  934.507597] sd 6:0:3:0: [sdd] Attached SCSI disk
+[21:36:10.365] [  934.515063]  sde: sde1
+[21:36:10.365] [  934.516009] sd 6:0:4:0: [sde] Attached SCSI disk
+[21:36:10.387] [  934.537173]  sdf: sdf1
+[21:36:10.388] [  934.538107] sd 6:0:5:0: [sdf] Attached SCSI disk
+[21:36:12.618] [  936.768497] br0: port 1(vnet1) entered disabled state
+[21:36:12.638] [  936.787977] vnet1 (unregistering): left allmulticast mode
+[21:36:12.638] [  936.788368] vnet1 (unregistering): left promiscuous mode
+[21:36:12.638] [  936.788729] br0: port 1(vnet1) entered disabled state
+[21:36:12.985] [  937.134989] audit: type=1400 audit(1791553050.926:148): apparmor="STATUS" operation="profile_remove" profile="unconfined" name="libvirt-bc87f6d5-7f31-4c8b-8ddf-b125c522e4cf" pid=22053 comm="apparmor_parser"
+[21:36:13.013] [  937.162310] pcieport 0000:00:1c.0: Enabling MPC IRBNCE
+[21:36:13.013] [  937.162997] pcieport 0000:00:1c.0: Intel PCH root port ACS workaround enabled
+[21:36:13.079] [  937.229058] igb 0000:03:00.0: added PHC on eth0
+[21:36:13.080] [  937.229784] igb 0000:03:00.0: Intel(R) Gigabit Ethernet Network Connection
+[21:36:13.080] [  937.230457] igb 0000:03:00.0: eth0: (PCIe:2.5Gb/s:Width x1) xx:xx:xx:xx:xx:xx
+[21:36:13.081] [  937.231182] igb 0000:03:00.0: eth0: PBA No: 130916-002
+[21:36:13.082] [  937.231844] igb 0000:03:00.0: Using MSI-X interrupts. 4 rx queue(s), 4 tx queue(s)
+[21:36:13.083] [  937.232996] igb 0000:03:00.0 enp3s0: renamed from eth0
+[21:36:13.135] [  937.286080] br0: port 1(enp3s0) entered blocking state
+[21:36:13.137] [  937.286862] br0: port 1(enp3s0) entered disabled state
+[21:36:13.142] [  937.289327] igb 0000:03:00.0 enp3s0: entered allmulticast mode
+[21:36:13.146] [  937.293071] igb 0000:03:00.0 enp3s0: entered promiscuous mode
+[21:36:14.896] [  939.045752] br-e8bbe37469bd: port 2(vethcfdfef8) entered disabled state
+[21:36:14.897] [  939.047189] veth10d3403: renamed from eth0
+[21:36:14.961] [  939.111698] br-e8bbe37469bd: port 2(vethcfdfef8) entered disabled state
+[21:36:14.981] [  939.130912] vethcfdfef8 (unregistering): left allmulticast mode
+[21:36:14.981] [  939.131310] vethcfdfef8 (unregistering): left promiscuous mode
+[21:36:14.981] [  939.131695] br-e8bbe37469bd: port 2(vethcfdfef8) entered disabled state
+[21:36:15.009] [  939.158963] br-e8bbe37469bd: port 3(vethe2ce4e9) entered disabled state
+[21:36:15.013] [  939.161519] veth6411659: renamed from eth0
+[21:36:15.089] [  939.239027] br-43af5f114c5b: port 1(veth0e578b6) entered disabled state
+[21:36:15.090] [  939.239867] vethcf8f2ad: renamed from eth0
+[21:36:15.143] [  939.292220] br-e8bbe37469bd: port 3(vethe2ce4e9) entered disabled state
+[21:36:15.168] [  939.318315] vethe2ce4e9 (unregistering): left allmulticast mode
+[21:36:15.168] [  939.318756] vethe2ce4e9 (unregistering): left promiscuous mode
+[21:36:15.169] [  939.319180] br-e8bbe37469bd: port 3(vethe2ce4e9) entered disabled state
+[21:36:15.197] [  939.347143] br-43af5f114c5b: port 1(veth0e578b6) entered disabled state
+[21:36:15.234] [  939.383422] veth0e578b6 (unregistering): left allmulticast mode
+[21:36:15.234] [  939.383831] veth0e578b6 (unregistering): left promiscuous mode
+[21:36:15.234] [  939.384177] br-43af5f114c5b: port 1(veth0e578b6) entered disabled state
+[21:36:20.110] [  944.259673] EXT4-fs (sdg2): unmounting filesystem 9663a932-729c-472e-841d-bafc5e550238.
+[21:36:20.340] [  944.490016] systemd-shutdown[1]: Syncing filesystems and block devices.
+[21:36:20.422] [  944.571543] systemd-shutdown[1]: Sending SIGTERM to remaining processes...
+[21:36:20.458] [  944.608434] systemd-journald[767]: Received SIGTERM from PID 1 (systemd-shutdow).
+[21:36:20.507] [  944.656381] systemd-shutdown[1]: Sending SIGKILL to remaining processes...
+[21:36:20.539] [  944.688390] systemd-shutdown[1]: Unmounting file systems.
+[21:36:20.544] [  944.693787] (sd-remount)[22241]: Remounting '/' read-only with options ''.
+[21:36:20.638] [  944.788073] EXT4-fs (dm-0): re-mounted 7169dbb8-6a61-4603-a83c-998c2376fdb7 ro.
+[21:36:20.669] [  944.818188] systemd-shutdown[1]: All filesystems unmounted.
+[21:36:20.669] [  944.818753] systemd-shutdown[1]: Deactivating swaps.
+[21:36:20.670] [  944.819371] systemd-shutdown[1]: All swaps deactivated.
+[21:36:20.670] [  944.819918] systemd-shutdown[1]: Detaching loop devices.
+[21:36:20.690] [  944.839852] systemd-shutdown[1]: All loop devices detached.
+[21:36:20.693] [  944.842284] systemd-shutdown[1]: Stopping MD devices.
+[21:36:20.694] [  944.843692] systemd-shutdown[1]: All MD devices stopped.
+[21:36:20.695] [  944.844598] systemd-shutdown[1]: Detaching DM devices.
+[21:36:20.697] [  944.846186] systemd-shutdown[1]: Not all DM devices detached, 1 left.
+[21:36:20.698] [  944.847122] systemd-shutdown[1]: Cannot finalize remaining DM devices, continuing.
+[21:36:20.793] [  944.943738] systemd-shutdown[1]: Successfully changed into root pivot.
+[21:36:20.794] [  944.944227] systemd-shutdown[1]: Returning to initrd...
+[21:36:20.807] [  944.957505] shutdown[1]: Syncing filesystems and block devices.
+[21:36:20.808] [  944.958427] shutdown[1]: Sending SIGTERM to remaining processes...
+[21:36:20.835] [  944.984929] shutdown[1]: Sending SIGKILL to remaining processes...
+[21:36:20.867] [  945.017571] shutdown[1]: Unmounting file systems.
+[21:36:20.870] [  945.019220] (sd-umoun[22251]: Unmounting '/oldroot/sys/kernel/config'.
+[21:36:20.873] [  945.022284] (sd-umoun[22252]: Unmounting '/oldroot/sys/fs/fuse/connections'.
+[21:36:20.876] [  945.024751] (sd-umoun[22253]: Unmounting '/oldroot/sys/kernel/tracing'.
+[21:36:20.878] [  945.027919] (sd-umoun[22254]: Unmounting '/oldroot/sys/kernel/debug'.
+[21:36:20.882] [  945.031261] (sd-umoun[22255]: Unmounting '/oldroot/dev/mqueue'.
+[21:36:20.884] [  945.033983] (sd-umoun[22256]: Unmounting '/oldroot/dev/hugepages'.
+[21:36:20.886] [  945.035806] (sd-umoun[22257]: Unmounting '/oldroot/sys/fs/bpf'.
+[21:36:20.889] [  945.038234] (sd-umoun[22258]: Unmounting '/oldroot/sys/fs/pstore'.
+[21:36:20.891] [  945.040986] (sd-umoun[22259]: Unmounting '/oldroot/sys/fs/cgroup'.
+[21:36:20.893] [  945.043019] (sd-umoun[22260]: Unmounting '/oldroot/run/lock'.
+[21:36:20.896] [  945.045754] (sd-umoun[22261]: Unmounting '/oldroot/dev/shm'.
+[21:36:20.899] [  945.048723] (sd-umoun[22262]: Unmounting '/oldroot/sys/kernel/security'.
+[21:36:20.902] [  945.051933] (sd-umoun[22263]: Unmounting '/oldroot'.
+[21:36:20.903] [  945.052882] (sd-umoun[22263]: Failed to unmount /oldroot: Device or resource busy
+[21:36:20.905] [  945.055258] (sd-umoun[22264]: Unmounting '/oldroot/sys/firmware/efi/efivars'.
+[21:36:20.908] [  945.057658] (sd-umoun[22265]: Unmounting '/oldroot/run'.
+[21:36:20.910] [  945.060387] (sd-umoun[22266]: Unmounting '/oldroot/dev/pts'.
+[21:36:20.912] [  945.062345] (sd-umoun[22267]: Unmounting '/oldroot/dev'.
+[21:36:20.914] [  945.064412] (sd-umoun[22268]: Unmounting '/oldroot/proc'.
+[21:36:20.915] [  945.066271] (sd-umoun[22269]: Unmounting '/oldroot/sys'.
+[21:36:20.918] [  945.068504] (sd-umoun[22270]: Unmounting '/oldroot'.
+[21:36:21.207] [  945.356703] EXT4-fs (dm-0): unmounting filesystem 7169dbb8-6a61-4603-a83c-998c2376fdb7.
+[21:36:21.221] [  945.370317] shutdown[1]: All filesystems unmounted.
+[21:36:21.221] [  945.371330] shutdown[1]: Deactivating swaps.
+[21:36:21.222] [  945.372264] shutdown[1]: All swaps deactivated.
+[21:36:21.222] [  945.372988] shutdown[1]: Detaching loop devices.
+[21:36:21.225] [  945.375354] shutdown[1]: All loop devices detached.
+[21:36:21.226] [  945.375702] shutdown[1]: Stopping MD devices.
+[21:36:21.227] [  945.376479] shutdown[1]: All MD devices stopped.
+[21:36:21.227] [  945.377097] shutdown[1]: Detaching DM devices.
+[21:36:21.228] [  945.378373] shutdown[1]: Detaching DM /dev/dm-0 (252:0).
+[21:36:21.247] [  945.396913] shutdown[1]: All DM devices detached.
+[21:36:21.248] [  945.397522] shutdown[1]: All filesystems, swaps, loop devices, MD devices and DM devices detached.
+[21:36:21.262] [  945.411452] shutdown[1]: Syncing filesystems and block devices.
+[21:36:21.263] [  945.412774] shutdown[1]: Rebooting.
+[21:36:21.512] [  945.662231] sd 6:0:5:0: [sdf] Synchronizing SCSI cache
+[21:36:21.513] [  945.662794] sd 6:0:4:0: [sde] Synchronizing SCSI cache
+[21:36:21.514] [  945.663685] sd 6:0:3:0: [sdd] Synchronizing SCSI cache
+[21:36:21.515] [  945.664705] sd 6:0:2:0: [sdc] Synchronizing SCSI cache
+[21:36:21.516] [  945.665744] sd 6:0:1:0: [sdb] Synchronizing SCSI cache
+[21:36:21.517] [  945.666784] sd 6:0:0:0: [sda] Synchronizing SCSI cache
+[21:36:21.519] [  945.667960] sd 5:0:0:0: [sdg] Synchronizing SCSI cache
+[21:39:58.790] [  131.292255] printk: legacy console [netcon0] enabled
+[21:39:58.790] [  131.292295] netconsole: network logging started
+[21:39:58.791] [  131.292975] POST-REBOOT-TEST 重启后验证:iommu=pt + HR 页表 + NIC
+[21:39:58.801] [  131.302481] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[21:39:58.851] [  131.353408] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[21:39:58.857] [  131.359019] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[21:39:58.907] [  131.408948] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[21:39:59.015] [  131.516655] habanalabs: loading driver, version: 1.24.1-b336d5e
+[21:39:59.017] [  131.517274] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[21:39:59.018] [  131.518242] habanalabs 0000:02:00.0: enabling device (0100 -> 0102)
+[21:39:59.111] [  131.612235] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[21:39:59.259] [  131.759761] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[21:40:12.482] [  144.983022] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[21:40:15.155] [  147.656152] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[21:40:16.375] [  148.876177] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[21:40:16.430] [  148.931179] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[21:40:16.430] [  148.931535] habanalabs 0000:02:00.0: bad SerDes type 65535
+[21:40:16.430] [  148.931844] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[21:40:20.170] [  152.671058] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[21:40:20.188] [  152.689125] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[21:40:30.833] [  163.333678] habanalabs 0000:02:00.0 hbl_0: IB device registered
+[21:40:30.851] [  163.352062] habanalabs 0000:02:00.0: hwmon3: add sensors information
+[21:40:30.852] [  163.352628] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
+[21:41:03.755] [  196.255737] habanalabs 0000:02:00.0 hbl_0: Unregister IB device
+[21:41:03.762] [  196.262370] habanalabs_ib: driver removed
+[21:41:03.800] [  196.300850] habanalabs_en: driver removed
+[21:41:04.014] [  196.514472] habanalabs_cn: driver removed
+[21:41:04.047] [  196.547461] habanalabs 0000:02:00.0: Removing device 0000:02:00.0
+[21:41:04.065] [  196.566095] habanalabs 0000:02:00.0: Waiting for all processes to exit (timeout of 600 seconds)
+[21:41:15.151] [  207.651144] habanalabs: removed device successfully
+[21:41:15.177] [  207.676550] habanalabs_compat: module removed
+[21:41:16.231] [  208.731209] habanalabs_compat: loading module, version: 1.24.1-b336d5e
+[21:41:16.284] [  208.784573] habanalabs_cn: loading driver, version: 1.24.1-b336d5e
+[21:41:16.289] [  208.789851] habanalabs_en: loading driver, version: 1.24.1-b336d5e
+[21:41:16.295] [  208.794807] habanalabs_ib: loading driver, version: 1.24.1-b336d5e
+[21:41:16.415] [  208.915305] habanalabs: loading driver, version: 1.24.1-b336d5e
+[21:41:16.420] [  208.919446] habanalabs 0000:02:00.0: habanalabs device found [1da3:1020] (rev 1)
+[21:41:16.435] [  208.934105] workqueue: work_for_cpu_fn hogged CPU for >10000us 4 times, consider switching to WQ_UNBOUND
+[21:41:16.517] [  209.016928] habanalabs 0000:02:00.0: Loading secured firmware to device, may take some time...
+[21:41:16.661] [  209.160414] habanalabs 0000:02:00.0: preboot full version: 'Preboot version hl-gaudi2-1.14.0-fw-48.0.1-sec-7 (Jan 07 2024 - 20:03:16)'
+[21:41:29.786] [  222.285847] habanalabs 0000:02:00.0: boot-fit version 62.6.2-sec-11
+[21:41:32.463] [  224.962517] habanalabs 0000:02:00.0: Successfully loaded firmware to device
+[21:41:33.681] [  226.181177] habanalabs 0000:02:00.0: Linux version 62.6.2-sec-11
+[21:41:33.736] [  226.236185] habanalabs 0000:02:00.0: PATCHED: FW link_mask=0, keeping ports_mask=0xffffff
+[21:41:33.737] [  226.236655] habanalabs 0000:02:00.0: bad SerDes type 65535
+[21:41:33.737] [  226.236903] habanalabs 0000:02:00.0: PATCHED-ignore-bad-serdes
+[21:41:37.471] [  229.970692] habanalabs 0000:02:00.0: Found GAUDI2 device with 96GB DRAM
+[21:41:37.489] [  229.988837] [drm] Initialized habanalabs 1.24.1 (null) for 0000:02:00.0 on minor 0
+[21:41:48.147] [  240.646261] habanalabs 0000:02:00.0 hbl_0: IB device registered
+[21:41:48.165] [  240.665005] habanalabs 0000:02:00.0: hwmon3: add sensors information
+[21:41:48.166] [  240.665507] habanalabs 0000:02:00.0: Successfully added device 0000:02:00.0 to habanalabs driver
